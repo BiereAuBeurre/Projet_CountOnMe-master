@@ -15,14 +15,14 @@ class SimpleCalcTests: XCTestCase {
     var secondNumber: Int!
     
     override func setUp() {
-        calculation = Calculation()
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        calculation = Calculation()
     }
     override func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
         calculation = nil
         firstNumber = nil
         secondNumber = nil
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
     func testGivenFirstNumberIs3AndSecondNumberIs5_WhenAdditionating_ThenResultIs7() {
@@ -54,7 +54,6 @@ class SimpleCalcTests: XCTestCase {
         secondNumber = 3
         let result = calculation?.multiplication(firstNumber: firstNumber, secondNumber: secondNumber)
         XCTAssertEqual(result, "15")
-        
     }
 
 }

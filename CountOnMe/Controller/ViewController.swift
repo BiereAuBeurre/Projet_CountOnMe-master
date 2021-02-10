@@ -36,6 +36,7 @@ class ViewController: UIViewController {
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        textView.text = ""
         // Do any additional setup after loading the view.
     }
     
