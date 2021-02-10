@@ -19,5 +19,14 @@ class Calculation {
     let result = firstNumber - secondNumber
     return "\(result)"
     }
+
+    func divide (firstNumber: Int, secondNumber:Int) -> String {
+        let result = firstNumber / secondNumber
+        return "\(result)"
+    }
+    func multiplication(firstNumber:Int, secondNumber: Int) -> String {
+        let result = firstNumber * secondNumber
+        return "\(result)"
+    }
 }
 

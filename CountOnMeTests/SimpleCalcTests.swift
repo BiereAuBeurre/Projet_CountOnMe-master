@@ -11,30 +11,50 @@ import XCTest
 
 class SimpleCalcTests: XCTestCase {
     var calculation: Calculation?
+    var firstNumber: Int!
+    var secondNumber: Int!
+    
     override func setUp() {
         calculation = Calculation()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
     override func tearDown() {
         calculation = nil
+        firstNumber = nil
+        secondNumber = nil
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testAddition() {
+    func testGivenFirstNumberIs3AndSecondNumberIs5_WhenAdditionating_ThenResultIs7() {
         // Given
-        let a = 3
-        let b = 4
+        firstNumber = 3
+        secondNumber = 4
         // When
-        let result = calculation?.addition(firstNumber: a, secondNumber: b)
+        let result = calculation?.addition(firstNumber: firstNumber, secondNumber: secondNumber)
         // Then
         XCTAssertEqual(result, "7")
     }
     
-    func testSoustraction() {
-        let firstNumber = 20
-        let secondNumber = 15
+    func testGivenFirstNumberIs20AndSecondNumberIs15_WhenSubstracting_ThenResultIs5() {
+        firstNumber = 20
+        secondNumber = 15
         let result = calculation?.soustraction(firstNumber: firstNumber, secondNumber: secondNumber)
         XCTAssertEqual(result, "5")
+    }
+    
+    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenDividing_ThenResultIs2() {
+        firstNumber = 10
+        secondNumber = 5
+        let result = calculation?.divide(firstNumber: firstNumber, secondNumber: secondNumber)
+        XCTAssertEqual(result, "2")
+    }
+    
+    func testGivenFirstNumberIs5AndSecondNumberIs3_WhenMultiplicating_ThenResultIs15() {
+        firstNumber = 5
+        secondNumber = 3
+        let result = calculation?.multiplication(firstNumber: firstNumber, secondNumber: secondNumber)
+        XCTAssertEqual(result, "15")
+        
     }
 
 }
