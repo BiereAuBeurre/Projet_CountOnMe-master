@@ -57,14 +57,7 @@ class ViewController: UIViewController {
         } else if sender == operatorButton[3] {
             calculationButtonTapped(calculatingSymbol: " - ")
         } else if sender == operatorButton[4] {
-            guard calculation.expressionIsCorrect else {
-                showAlert(message: "Entrez une expression correcte !")
-                return
-            }
-            guard calculation.expressionHaveEnoughElement else {
-                showAlert(message: "Démarrez un nouveau calcul !")
-                return
-            }
+            
             let operationsToReduce = calculation.equalExecution()
             // Then update the view with the result
             textView.text.append(" = \(operationsToReduce.first!)")
