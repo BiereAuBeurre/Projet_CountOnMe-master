@@ -11,6 +11,9 @@ import UIKit
 class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
+    @IBOutlet var operatorButton: [UIButton]!
+    
+    let calculation = Calculation()
     
     var elements: [String] {
         return textView.text.split(separator: " ").map { "\($0)" }
@@ -36,8 +39,8 @@ class ViewController: UIViewController {
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        textView.text = ""
         // Do any additional setup after loading the view.
+        textView.text = ""
     }
     
     
@@ -46,11 +49,9 @@ class ViewController: UIViewController {
         guard let numberText = sender.title(for: .normal) else {
             return
         }
-        
         if expressionHaveResult {
             textView.text = ""
         }
-        
         textView.text.append(numberText)
     }
     
@@ -68,53 +69,47 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func tappedAdditionButton(_ sender: UIButton) {
-        calculationButtonTapped(calculatingSymbol: " + ")
-    }
-    
-    @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        calculationButtonTapped(calculatingSymbol: " - ")
-    }
-
-    @IBAction func tappedEqualButton(_ sender: UIButton) {
-        guard expressionIsCorrect else {
-//            let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
-//            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//            return self.present(alertVC, animated: true, completion: nil)
-            showAlert(message: "Entrez une expression correcte !")
-            return
-        }
-        
-        guard expressionHaveEnoughElement else {
-//            let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !", preferredStyle: .alert)
-//            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//            return self.present(alertVC, animated: true, completion: nil)
-            showAlert(message: "Démarrez un nouveau calcul !")
-            return
-        }
-        
-        // Create local copy of operations
-        var operationsToReduce = elements
-        
-        // Iterate over operations while an operand still here
-        while operationsToReduce.count > 1 {
-            let left = Int(operationsToReduce[0])!
-            let operand = operationsToReduce[1]
-            let right = Int(operationsToReduce[2])!
-            
-            let result: Int
-            switch operand {
-            case "+": result = left + right
-            case "-": result = left - right
-            default: fatalError("Unknown operator !")
+    @IBAction func tappedOperatorButton(_ sender: UIButton) {
+        if sender == operatorButton[0] {
+            calculationButtonTapped(calculatingSymbol: " + ")
+        } else if sender == operatorButton[1] {
+            // Code for multiplication
+        } else if sender == operatorButton[2] {
+            // Code for divison
+        } else if sender == operatorButton[3] {
+            calculationButtonTapped(calculatingSymbol: " - ")
+        } else if sender == operatorButton[4] {
+            guard expressionIsCorrect else {
+                showAlert(message: "Entrez une expression correcte !")
+                return
             }
             
-            operationsToReduce = Array(operationsToReduce.dropFirst(3))
-            operationsToReduce.insert("\(result)", at: 0)
+            guard expressionHaveEnoughElement else {
+                showAlert(message: "Démarrez un nouveau calcul !")
+                return
+            }
+            
+            // Create local copy of operations
+            var operationsToReduce = elements
+            
+            // Iterate over operations while an operand still here
+            while operationsToReduce.count > 1 {
+                let left = Int(operationsToReduce[0])!
+                let operand = operationsToReduce[1]
+                let right = Int(operationsToReduce[2])!
+                let result: String
+                
+                switch operand {
+                case "+": result = calculation.addition(firstNumber: left, secondNumber: right)
+                case "-": result = calculation.soustraction(firstNumber: left, secondNumber: right)
+                default: fatalError("Unknown operator !")
+                }
+                // Making the operation programaticly
+                operationsToReduce = Array(operationsToReduce.dropFirst(3))
+                operationsToReduce.insert("\(result)", at: 0)
+            }
+            // Then update the view with the result
+            textView.text.append(" = \(operationsToReduce.first!)")
         }
-        
-        textView.text.append(" = \(operationsToReduce.first!)")
     }
-
 }
-
