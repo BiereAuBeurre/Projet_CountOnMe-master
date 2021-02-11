@@ -49,5 +49,24 @@ class Calculation {
         let result = firstNumber * secondNumber
         return "\(result)"
     }
+    
+    func equalExecution() -> [String] {
+        var operationsToReduce = elements
+        while operationsToReduce.count > 1 {
+            let left = Int(operationsToReduce[0])!
+            let operand = operationsToReduce[1]
+            let right = Int(operationsToReduce[2])!
+            let result: String
+            
+            switch operand {
+            case "+": result = addition(firstNumber: left, secondNumber: right)
+            case "-": result = soustraction(firstNumber: left, secondNumber: right)
+            default: fatalError("Unknown operator !")
+            }
+            // Making the operation programaticly
+            operationsToReduce = Array(operationsToReduce.dropFirst(3))
+            operationsToReduce.insert("\(result)", at: 0)
+        }
+        return operationsToReduce
+    }
 }
-

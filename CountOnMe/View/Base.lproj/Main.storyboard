@@ -246,9 +246,6 @@
                             <constraint firstItem="AWJ-Vl-uau" firstAttribute="trailing" secondItem="ogr-Aw-e1h" secondAttribute="trailing" constant="16" id="vhY-pf-N0k"/>
                             <constraint firstItem="AWJ-Vl-uau" firstAttribute="bottom" secondItem="ogr-Aw-e1h" secondAttribute="bottom" constant="16" id="zlc-uG-L0Y"/>
                         </constraints>
-                        <connections>
-                            <outlet property="textView" destination="T2H-yn-nBB" id="g12-MH-Zx4"/>
-                        </connections>
                     </view>
                     <connections>
                         <outlet property="textView" destination="T2H-yn-nBB" id="yj4-Cq-KQa"/>

@@ -22,7 +22,6 @@ class ViewController: UIViewController {
         textView.text = ""
     }
     
-    
     // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
         guard let numberText = sender.title(for: .normal) else {
@@ -52,9 +51,9 @@ class ViewController: UIViewController {
         if sender == operatorButton[0] {
             calculationButtonTapped(calculatingSymbol: " + ")
         } else if sender == operatorButton[1] {
-            // Code for multiplication
+            calculationButtonTapped(calculatingSymbol: " x ")
         } else if sender == operatorButton[2] {
-            // Code for divison
+            calculationButtonTapped(calculatingSymbol: " / ")
         } else if sender == operatorButton[3] {
             calculationButtonTapped(calculatingSymbol: " - ")
         } else if sender == operatorButton[4] {
@@ -66,24 +65,7 @@ class ViewController: UIViewController {
                 showAlert(message: "Démarrez un nouveau calcul !")
                 return
             }
-            // Create local copy of operations
-            var operationsToReduce = calculation.elements
-            // Iterate over operations while an operand still here
-            while operationsToReduce.count > 1 {
-                let left = Int(operationsToReduce[0])!
-                let operand = operationsToReduce[1]
-                let right = Int(operationsToReduce[2])!
-                let result: String
-                
-                switch operand {
-                case "+": result = calculation.addition(firstNumber: left, secondNumber: right)
-                case "-": result = calculation.soustraction(firstNumber: left, secondNumber: right)
-                default: fatalError("Unknown operator !")
-                }
-                // Making the operation programaticly
-                operationsToReduce = Array(operationsToReduce.dropFirst(3))
-                operationsToReduce.insert("\(result)", at: 0)
-            }
+            let operationsToReduce = calculation.equalExecution()
             // Then update the view with the result
             textView.text.append(" = \(operationsToReduce.first!)")
         }
