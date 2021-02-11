@@ -14,28 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet var operatorButton: [UIButton]!
     
     let calculation = Calculation()
-    
-    var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
-    }
-    
-    // Error check computed variables
-    var expressionIsCorrect: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    
-    var expressionHaveEnoughElement: Bool {
-        return elements.count >= 3
-    }
-    
-    var canAddOperator: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    
-    var expressionHaveResult: Bool {
-        return textView.text.firstIndex(of: "=") != nil
-    }
-    
+
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +28,7 @@ class ViewController: UIViewController {
         guard let numberText = sender.title(for: .normal) else {
             return
         }
-        if expressionHaveResult {
+        if calculation.expressionHaveResult {
             textView.text = ""
         }
         textView.text.append(numberText)
@@ -62,7 +41,7 @@ class ViewController: UIViewController {
     }
     
     func calculationButtonTapped(calculatingSymbol: String) {
-        if canAddOperator {
+        if calculation.canAddOperator {
             textView.text.append(calculatingSymbol)
         } else {
             showAlert(message: "Un operateur est déja mis !")
@@ -79,19 +58,16 @@ class ViewController: UIViewController {
         } else if sender == operatorButton[3] {
             calculationButtonTapped(calculatingSymbol: " - ")
         } else if sender == operatorButton[4] {
-            guard expressionIsCorrect else {
+            guard calculation.expressionIsCorrect else {
                 showAlert(message: "Entrez une expression correcte !")
                 return
             }
-            
-            guard expressionHaveEnoughElement else {
+            guard calculation.expressionHaveEnoughElement else {
                 showAlert(message: "Démarrez un nouveau calcul !")
                 return
             }
-            
             // Create local copy of operations
-            var operationsToReduce = elements
-            
+            var operationsToReduce = calculation.elements
             // Iterate over operations while an operand still here
             while operationsToReduce.count > 1 {
                 let left = Int(operationsToReduce[0])!
