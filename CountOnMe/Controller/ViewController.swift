@@ -65,8 +65,8 @@ class ViewController: UIViewController {
                 showAlert(message: "Démarrez un nouveau calcul !")
                 return
             }
+            calculation.equalExecution()
         }
-        calculation.equalExecution()
     }
 }
 
