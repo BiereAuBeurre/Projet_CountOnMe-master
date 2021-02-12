@@ -20,73 +20,162 @@ class Calculation {
             calculationDelegate?.calculationUpdated(calculationView)
         }
     }
-    var elements: [String] {
-        return calculationView.split(separator: " ").map { "\($0)" }
+//    var elements: [String] {
+//        return calculationView.split(separator: " ").map { "\($0)" }
+//    }
+    
+    func expressionIsCorrect(elements: [String]) -> Bool {
+        return elements.last != "+" && elements.last != "-" && elements.last != "/" && elements.last != "x"
+    }
+    func canAddOperator(elements: [String]) -> Bool {
+        return elements.last != "+" && elements.last != "-" && elements.last != "/" && elements.last != "x"
     }
     
-    var expressionIsCorrect: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    var canAddOperator: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    
-    var expressionHaveEnoughElement: Bool {
+    func expressionHaveEnoughElement(elements: [String]) -> Bool {
         return elements.count >= 3
     }
 
-    var noDivisionByZero: Bool {
+    func noDivisionByZero(elements: [String]) -> Bool {
         return elements[2] != "\(0)"
     }
     
-    var expressionHaveResult: Bool {
-        return calculationView.firstIndex(of: "=") != nil
+    func expressionHaveResult(elements: [String]) -> Bool {
+            return elements.contains("=")
+        }
+    
+    func clearText() {
+        calculationView = ""
     }
     
     // MARK: - Calcul methods
-    func addition(firstNumber: Int, secondNumber: Int) -> String {
-        let result = firstNumber + secondNumber
-        return "\(result)"
+//    func addition(firstNumber: Int, secondNumber: Int) -> String {
+//        let result = firstNumber + secondNumber
+//        return "\(result)"
+//    }
+//
+//    func soustraction(firstNumber: Int, secondNumber: Int) -> String {
+//        let result = firstNumber - secondNumber
+//        return "\(result)"
+//    }
+    private func calculateAdditionAndSubtraction(operationsToReduce: [String]) -> [String]? {
+        var additionAndSubtraction: [String] = operationsToReduce
+        guard let left: Float = Float(additionAndSubtraction[0]) else {
+            return nil
+        }
+        let operand = additionAndSubtraction[1]
+        guard let right: Float = Float(additionAndSubtraction[2]) else {
+            return nil
+        }
+        let result: Float
+        switch operand {
+        case "+": result = left + right
+        case "-": result = left - right
+        default: return nil
+        }
+        additionAndSubtraction = Array(additionAndSubtraction.dropFirst(3))
+        additionAndSubtraction.insert("\(result)", at: 0)
+        return additionAndSubtraction
     }
     
-    func soustraction(firstNumber: Int, secondNumber: Int) -> String {
-        let result = firstNumber - secondNumber
-        return "\(result)"
-    }
-    
-    func divide (firstNumber: Int, secondNumber:Int) -> String {
+    func divide (firstNumber: Float, secondNumber:Float) -> String {
         let result = firstNumber / secondNumber
         return "\(result)"
         
     }
     
-    func multiplication(firstNumber:Int, secondNumber: Int) -> String {
+    func multiplication(firstNumber:Float, secondNumber: Float) -> String {
         let result = firstNumber * secondNumber
         return "\(result)"
     }
     
-    func equalExecution() /*-> [String]*/ {
+    func forbidDivisionbyZero (elements: [String]) -> Bool {
+        return elements[1] == "/" 
+    }
+    
+    @objc func equalExecution(elements: [String]) -> String? {
         var operationsToReduce = elements
         while operationsToReduce.count > 1 {
-            let left = Int(operationsToReduce[0])!
-            let operand = operationsToReduce[1]
-            let right = Int(operationsToReduce[2])!
-            let result: String
-            
-            switch operand {
-            case "+": result = addition(firstNumber: left, secondNumber: right)
-            case "-": result = soustraction(firstNumber: left, secondNumber: right)
-            case "/": result = divide(firstNumber: left, secondNumber: right)
-            case "x": result = multiplication(firstNumber: left, secondNumber: right)
-            default: fatalError("Unknown operator !")
+            //        if the first index is a subtraction operator than it's a negative number so it
+            //        merges the first and the second index
+            if operationsToReduce[0] == "-" {
+                operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
+                operationsToReduce.remove(at: 1)
             }
-            
-            // Making the operation programaticly and cleaning the calcul for the result only (preventing additionals calculation tapped by user before tapping equal button)
-            operationsToReduce = Array(operationsToReduce.dropFirst(3))
-            operationsToReduce.insert("\(result)", at: 0)
-            
-            // Then update the textView with the result
-            calculationView.append(" = \(operationsToReduce.first!)")
+            while operationsToReduce.contains("x") || operationsToReduce.contains("/") {
+                if let result = calculatePriorities(operationsToReduce: operationsToReduce) {
+                    operationsToReduce = result
+                } else {
+                    return nil
+                }
+            }
+            while expressionHaveEnoughElement(elements: operationsToReduce) {
+                if let result = calculateAdditionAndSubtraction(operationsToReduce: operationsToReduce) {
+                    operationsToReduce = result
+                } else {
+                    return nil
+                }
+            }
         }
+
+        return operationsToReduce.first
     }
-}
+        
+//        while operationsToReduce.count > 1 {
+//            let left = Int(operationsToReduce[0])!
+//            let operand = operationsToReduce[1]
+//            let right = Int(operationsToReduce[2])!
+//            let result: String
+//            // Modifier le result en guard let/if let qui appelera la method du model qui organise la priorisation des calculs
+//            switch operand {
+//            case "+": result = addition(firstNumber: left, secondNumber: right)
+//            case "-": result = soustraction(firstNumber: left, secondNumber: right)
+//            case "/": result = divide(firstNumber: left, secondNumber: right)
+//            case "x": result = multiplication(firstNumber: left, secondNumber: right)
+//            default: fatalError("Unknown operator !")
+//            }
+//
+//            // Making the operation programaticly and cleaning the calcul for the result only (preventing additionals calculation tapped by user before tapping equal button)
+//            operationsToReduce = Array(operationsToReduce.dropFirst(3))
+//            operationsToReduce.insert("\(result)", at: 0)
+//
+//            // Then update the textView with the result
+//            calculationView.append(" = \(operationsToReduce.first!)")
+//        }
+    }
+    
+    
+    // TEST PRIORITIZE CALCUL
+    
+    //    calculate the priorities when the calcul contains a division and\or a multiplication
+        private func calculatePriorities(operationsToReduce: [String]) -> [String]? {
+            var prioritiesCalculated: [String] = operationsToReduce
+            if let index = prioritiesCalculated.firstIndex(where: { $0 == "x" || $0 == "/"}) {
+                guard let left: Float = Float(prioritiesCalculated[index - 1]) else {
+                    return nil
+                }
+                let operand = prioritiesCalculated[index]
+                guard let right: Float = Float(prioritiesCalculated[index + 1]) else {
+                    return nil
+                }
+                let result: Float
+                switch operand {
+                case "x":
+                    result = left * right
+                case "/":
+                    if right == 0 {
+                        return nil
+                    } else {
+                        result = left / right
+                    }
+                default:
+                    return nil
+                }
+                prioritiesCalculated[index - 1] = "\(result)"
+                prioritiesCalculated.remove(at: index)
+                prioritiesCalculated.remove(at: index)
+            }
+            return prioritiesCalculated
+        }
+    
+    
+

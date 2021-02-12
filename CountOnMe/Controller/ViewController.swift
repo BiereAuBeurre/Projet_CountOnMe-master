@@ -14,23 +14,15 @@ class ViewController: UIViewController {
     @IBOutlet var operatorButton: [UIButton]!
     
     let calculation = Calculation()
-    
+    var elements: [String] {
+            return textView.text.split(separator: " ").map { "\($0)" }
+        }
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         calculation.calculationDelegate = self
-    }
-    
-    // View actions
-    @IBAction func tappedNumberButton(_ sender: UIButton) {
-        guard let numberText = sender.title(for: .normal) else {
-            return
-        }
-        if calculation.expressionHaveResult {
-            calculation.calculationView = ""
-        }
-        calculation.calculationView.append(numberText)
+        calculation.clearText()
     }
     
     func showAlert(message: String) {
@@ -40,12 +32,47 @@ class ViewController: UIViewController {
     }
     
     func calculationButtonTapped(calculatingSymbol: String) {
-        if calculation.canAddOperator {
+        if calculation.canAddOperator(elements: elements) {
             calculation.calculationView.append(calculatingSymbol)
         } else {
             showAlert(message: "Un operateur est déja mis !")
         }
     }
+    
+    func forbidDivisionbyZero() {
+        if elements[1] == "/" {
+            guard calculation.noDivisionByZero(elements: elements) else {
+                showAlert(message: "Division par zéro impossible !")
+                viewDidLoad()
+                return
+            }
+        }
+    }
+//    @IBAction func tappedNumberButton(_ sender: UIButton) {
+//        guard let numberText: String = sender.title(for: .normal) else {
+//            return
+//        }
+//        if calculator.expressionHasResult(elements: elements) {
+//            textView.text = ""
+//        }
+//        textView.text.append(numberText)
+//    }
+    
+    // View actions
+    @IBAction func tappedNumberButton(_ sender: UIButton) {
+        guard let numberText = sender.title(for: .normal) else {
+            return
+        }
+        if calculation.expressionHaveResult(elements: elements) {
+            calculation.clearText()
+        }
+        calculation.calculationView.append(numberText)
+    }
+    
+    @IBAction func ACButton(_ sender: UIButton) {
+        calculation.clearText()
+    }
+    
     
     @IBAction func tappedOperatorButton(_ sender: UIButton) {
         if sender == operatorButton[0] {
@@ -59,22 +86,20 @@ class ViewController: UIViewController {
         } else if sender == operatorButton[3] {
             calculationButtonTapped(calculatingSymbol: " - ")
         } else if sender == operatorButton[4] {
-            guard calculation.expressionIsCorrect else {
-                showAlert(message: "Entrez une expression correcte !")
-                return
-            }
-            guard calculation.expressionHaveEnoughElement else {
-                showAlert(message: "Démarrez un nouveau calcul !")
-                return
-            }
-            if calculation.elements[1] == "/" {
-                guard calculation.noDivisionByZero else {
-                    showAlert(message: "Division par zéro impossible !")
-                    calculation.calculationView = ""
+            
+            if elements.count >= 3 {
+                guard calculation.expressionIsCorrect(elements: elements) else {
+                    showAlert(message: "Entrez une expression correcte !")
                     return
                 }
+                forbidDivisionbyZero()
+                if let result: String = calculation.equalExecution(elements: /*calculation.*/elements) {
+                    textView.text.append(" = \(result)")
+                }
+            } else {
+                showAlert(message: "Entrez un calcul correct")
+                return
             }
-            calculation.equalExecution()
         }
     }
 }
