@@ -52,8 +52,10 @@ class ViewController: UIViewController {
             calculationButtonTapped(calculatingSymbol: " + ")
         } else if sender == operatorButton[1] {
             calculationButtonTapped(calculatingSymbol: " x ")
+            // Ajouter notion de priorisation du calcul égale à la division
         } else if sender == operatorButton[2] {
             calculationButtonTapped(calculatingSymbol: " / ")
+            // Ajouter notion de priorisation du calcul égale à la multiplication
         } else if sender == operatorButton[3] {
             calculationButtonTapped(calculatingSymbol: " - ")
         } else if sender == operatorButton[4] {
@@ -65,10 +67,11 @@ class ViewController: UIViewController {
                 showAlert(message: "Démarrez un nouveau calcul !")
                 return
             }
-            for _ in calculation.elements {
-                if calculation.elements[2] == "\(0)" {
-                    showAlert(message: "Erreur, division par zéro impossible !")
-                    return calculation.calculationView = ""
+            if calculation.elements[1] == "/" {
+                guard calculation.noDivisionByZero else {
+                    showAlert(message: "Division par zéro impossible !")
+                    calculation.calculationView = ""
+                    return
                 }
             }
             calculation.equalExecution()

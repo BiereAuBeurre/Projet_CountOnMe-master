@@ -13,31 +13,37 @@ protocol CalculationDelegate: class {
 import Foundation
 
 class Calculation {
-    
+    // MARK: -Model properties
     var calculationDelegate: CalculationDelegate?
-    
     var calculationView: String = "" {
         didSet {
             calculationDelegate?.calculationUpdated(calculationView)
         }
     }
-    
     var elements: [String] {
         return calculationView.split(separator: " ").map { "\($0)" }
     }
+    
     var expressionIsCorrect: Bool {
         return elements.last != "+" && elements.last != "-"
-    }
-    var expressionHaveEnoughElement: Bool {
-        return elements.count >= 3
     }
     var canAddOperator: Bool {
         return elements.last != "+" && elements.last != "-"
     }
+    
+    var expressionHaveEnoughElement: Bool {
+        return elements.count >= 3
+    }
+
+    var noDivisionByZero: Bool {
+        return elements[2] != "\(0)"
+    }
+    
     var expressionHaveResult: Bool {
         return calculationView.firstIndex(of: "=") != nil
     }
     
+    // MARK: - Calcul methods
     func addition(firstNumber: Int, secondNumber: Int) -> String {
         let result = firstNumber + secondNumber
         return "\(result)"
@@ -49,12 +55,11 @@ class Calculation {
     }
     
     func divide (firstNumber: Int, secondNumber:Int) -> String {
-        if secondNumber == 0 {
-            
-        }
         let result = firstNumber / secondNumber
         return "\(result)"
+        
     }
+    
     func multiplication(firstNumber:Int, secondNumber: Int) -> String {
         let result = firstNumber * secondNumber
         return "\(result)"
@@ -72,19 +77,14 @@ class Calculation {
             case "+": result = addition(firstNumber: left, secondNumber: right)
             case "-": result = soustraction(firstNumber: left, secondNumber: right)
             case "/": result = divide(firstNumber: left, secondNumber: right)
-//                for _ in elements {
-//                    if elements[2] == "\(0)" {
-//                        showAlert(message: "Erreur, division par zéro impossible !")
-//                        calculationView = ""
-//                        return
-//                    }
-//                }
             case "x": result = multiplication(firstNumber: left, secondNumber: right)
             default: fatalError("Unknown operator !")
             }
+            
             // Making the operation programaticly and cleaning the calcul for the result only (preventing additionals calculation tapped by user before tapping equal button)
             operationsToReduce = Array(operationsToReduce.dropFirst(3))
             operationsToReduce.insert("\(result)", at: 0)
+            
             // Then update the textView with the result
             calculationView.append(" = \(operationsToReduce.first!)")
         }
