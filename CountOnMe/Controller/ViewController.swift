@@ -68,8 +68,7 @@ class ViewController: UIViewController {
             for _ in calculation.elements {
                 if calculation.elements[2] == "\(0)" {
                     showAlert(message: "Erreur, division par zéro impossible !")
-                    textView.text = ""
-                    return
+                    return calculation.calculationView = ""
                 }
             }
             calculation.equalExecution()
