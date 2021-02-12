@@ -6,12 +6,24 @@
 //  Copyright © 2021 Vincent Saluzzo. All rights reserved.
 //
 
+protocol CalculationDelegate: class {
+    func calculationUpdated(_ calcul: String)
+}
+
 import Foundation
 
 class Calculation {
     
+    var calculationDelegate: CalculationDelegate?
+    
+    var calculationView: String = "" {
+        didSet {
+            calculationDelegate?.calculationUpdated(calculationView)
+        }
+    }
+    
     var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
+        return calculationView.split(separator: " ").map { "\($0)" }
     }
     var expressionIsCorrect: Bool {
         return elements.last != "+" && elements.last != "-"
@@ -23,7 +35,7 @@ class Calculation {
         return elements.last != "+" && elements.last != "-"
     }
     var expressionHaveResult: Bool {
-        return textView.text.firstIndex(of: "=") != nil
+        return calculationView.firstIndex(of: "=") != nil
     }
     
     func addition(firstNumber: Int, secondNumber: Int) -> String {
@@ -45,8 +57,7 @@ class Calculation {
         return "\(result)"
     }
     
-    func equalExecution() -> [String] {
-        
+    func equalExecution() /*-> [String]*/ {
         var operationsToReduce = elements
         while operationsToReduce.count > 1 {
             let left = Int(operationsToReduce[0])!
@@ -57,12 +68,16 @@ class Calculation {
             switch operand {
             case "+": result = addition(firstNumber: left, secondNumber: right)
             case "-": result = soustraction(firstNumber: left, secondNumber: right)
+            case "/": result = divide(firstNumber: left, secondNumber: right)
+            case "x": result = multiplication(firstNumber: left, secondNumber: right)
             default: fatalError("Unknown operator !")
             }
-            // Making the operation programaticly and cleaning the calcul for the result only (preventing others operations tapped by user)
+            // Making the operation programaticly and cleaning the calcul for the result only (preventing additionals calculation tapped by user before tapping equal button)
             operationsToReduce = Array(operationsToReduce.dropFirst(3))
             operationsToReduce.insert("\(result)", at: 0)
+            // Then update the textView with the result
+            calculationView.append(" = \(operationsToReduce.first!)")
         }
-        return operationsToReduce
+        /*return operationsToReduce*/
     }
 }

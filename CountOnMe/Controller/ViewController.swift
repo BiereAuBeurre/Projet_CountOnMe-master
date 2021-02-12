@@ -19,7 +19,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        textView.text = ""
+        calculation.calculationView = ""
+        calculation.calculationDelegate = self
     }
     
     // View actions
@@ -28,9 +29,9 @@ class ViewController: UIViewController {
             return
         }
         if calculation.expressionHaveResult {
-            textView.text = ""
+            calculation.calculationView = ""
         }
-        textView.text.append(numberText)
+        calculation.calculationView.append(numberText)
     }
     
     func showAlert(message: String) {
@@ -41,7 +42,7 @@ class ViewController: UIViewController {
     
     func calculationButtonTapped(calculatingSymbol: String) {
         if calculation.canAddOperator {
-            textView.text.append(calculatingSymbol)
+            calculation.calculationView.append(calculatingSymbol)
         } else {
             showAlert(message: "Un operateur est déja mis !")
         }
@@ -57,10 +58,22 @@ class ViewController: UIViewController {
         } else if sender == operatorButton[3] {
             calculationButtonTapped(calculatingSymbol: " - ")
         } else if sender == operatorButton[4] {
-            
-            let operationsToReduce = calculation.equalExecution()
-            // Then update the view with the result
-            textView.text.append(" = \(operationsToReduce.first!)")
+            guard calculation.expressionIsCorrect else {
+                showAlert(message: "Entrez une expression correcte !")
+                return
+            }
+            guard calculation.expressionHaveEnoughElement else {
+                showAlert(message: "Démarrez un nouveau calcul !")
+                return
+            }
+            /* let operationsToReduce = */calculation.equalExecution()
+            // textView.text.append(" = \(operationsToReduce.first!)")
         }
+    }
+}
+
+extension ViewController: CalculationDelegate {
+    func calculationUpdated(_ calcul: String) {
+        textView.text = calcul
     }
 }
