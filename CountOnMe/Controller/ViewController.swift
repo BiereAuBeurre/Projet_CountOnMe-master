@@ -14,12 +14,11 @@ class ViewController: UIViewController {
     @IBOutlet var operatorButton: [UIButton]!
     
     let calculation = Calculation()
-
+    
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        calculation.calculationView = ""
         calculation.calculationDelegate = self
     }
     
@@ -66,9 +65,8 @@ class ViewController: UIViewController {
                 showAlert(message: "Démarrez un nouveau calcul !")
                 return
             }
-            /* let operationsToReduce = */calculation.equalExecution()
-            // textView.text.append(" = \(operationsToReduce.first!)")
         }
+        calculation.equalExecution()
     }
 }
 

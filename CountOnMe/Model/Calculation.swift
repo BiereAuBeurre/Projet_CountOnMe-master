@@ -44,10 +44,10 @@ class Calculation {
     }
     
     func soustraction(firstNumber: Int, secondNumber: Int) -> String {
-    let result = firstNumber - secondNumber
-    return "\(result)"
+        let result = firstNumber - secondNumber
+        return "\(result)"
     }
-
+    
     func divide (firstNumber: Int, secondNumber:Int) -> String {
         let result = firstNumber / secondNumber
         return "\(result)"
@@ -78,6 +78,5 @@ class Calculation {
             // Then update the textView with the result
             calculationView.append(" = \(operationsToReduce.first!)")
         }
-        /*return operationsToReduce*/
     }
 }
