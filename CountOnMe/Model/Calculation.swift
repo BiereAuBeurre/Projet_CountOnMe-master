@@ -49,6 +49,9 @@ class Calculation {
     }
     
     func divide (firstNumber: Int, secondNumber:Int) -> String {
+        if secondNumber == 0 {
+            
+        }
         let result = firstNumber / secondNumber
         return "\(result)"
     }
@@ -69,6 +72,13 @@ class Calculation {
             case "+": result = addition(firstNumber: left, secondNumber: right)
             case "-": result = soustraction(firstNumber: left, secondNumber: right)
             case "/": result = divide(firstNumber: left, secondNumber: right)
+//                for _ in elements {
+//                    if elements[2] == "\(0)" {
+//                        showAlert(message: "Erreur, division par zéro impossible !")
+//                        calculationView = ""
+//                        return
+//                    }
+//                }
             case "x": result = multiplication(firstNumber: left, secondNumber: right)
             default: fatalError("Unknown operator !")
             }
