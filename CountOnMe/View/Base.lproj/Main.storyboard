@@ -220,7 +220,7 @@
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
-                                            <action selector="tappedOperatorButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="Ybk-b1-ecd"/>
+                                            <action selector="tappedEqualButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="pqE-2M-iKS"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Snm-AR-ZOp">
@@ -274,7 +274,6 @@
                         <outletCollection property="operatorButton" destination="vj1-VF-AV4" collectionClass="NSMutableArray" id="bhy-mo-5Pp"/>
                         <outletCollection property="operatorButton" destination="qFJ-qA-Xgh" collectionClass="NSMutableArray" id="1ph-l9-tdd"/>
                         <outletCollection property="operatorButton" destination="3zr-HC-0N9" collectionClass="NSMutableArray" id="Asx-d1-SUg"/>
-                        <outletCollection property="operatorButton" destination="qMj-Of-bCU" collectionClass="NSMutableArray" id="x8n-PM-fPT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7XP-3c-sJZ" sceneMemberID="firstResponder"/>

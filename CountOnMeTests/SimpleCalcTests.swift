@@ -11,8 +11,7 @@ import XCTest
 
 class SimpleCalcTests: XCTestCase {
     var calculation: Calculation?
-    var firstNumber: Float!
-    var secondNumber: Float!
+
     
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -21,39 +20,42 @@ class SimpleCalcTests: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         calculation = nil
-        firstNumber = nil
-        secondNumber = nil
     }
 
-//    func testGivenFirstNumberIs3AndSecondNumberIs5_WhenAdditionating_ThenResultIs7() {
-//        // Given
-//        firstNumber = 3
-//        secondNumber = 4
-//        // When
-//        let result = calculation?.addition(firstNumber: firstNumber, secondNumber: secondNumber)
-//        // Then
-//        XCTAssertEqual(result, "7")
-//    }
-//
-//    func testGivenFirstNumberIs20AndSecondNumberIs15_WhenSubstracting_ThenResultIs5() {
-//        firstNumber = 20
-//        secondNumber = 15
-//        let result = calculation?.soustraction(firstNumber: firstNumber, secondNumber: secondNumber)
-//        XCTAssertEqual(result, "5")
-//    }
-//
-    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenDividing_ThenResultIs2() {
-        firstNumber = 10
-        secondNumber = 5
-        let result = calculation?.divide(firstNumber: firstNumber, secondNumber: secondNumber)
-        XCTAssertEqual(result, "\(2)")
+    func testGivenFirstNumberIs3AndSecondNumberIs5_WhenAdditionating_ThenResultIs7() {
+        // Given & When
+        let result = calculation?.calculateAdditionAndSubtraction(operationsToReduce: ["3", "+", "5"])
+        // Then
+        XCTAssertEqual(result, ["8.0"])
+    }
+
+    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenSubstracting_ThenResultIs5() {
+        // Given & When
+        let result = calculation?.calculateAdditionAndSubtraction(operationsToReduce: ["10", "-", "5"])
+        // Then
+        XCTAssertEqual(result, ["5.0"])
     }
     
-    func testGivenFirstNumberIs5AndSecondNumberIs3_WhenMultiplicating_ThenResultIs15() {
-        firstNumber = 5
-        secondNumber = 3
-        let result = calculation?.multiplication(firstNumber: firstNumber, secondNumber: secondNumber)
-        XCTAssertEqual(result, "\(15)")
+    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenDividing_ThenResultIs2() {
+        // Given & When
+        let result = calculation?.calculatePriorities(operationsToReduce: ["10", "÷", "5"])
+        // Then
+        XCTAssertEqual(result, ["2.0"])
+    }
+    
+    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenMultiplicating_ThenResultIs50() {
+        // Given & When
+        let result = calculation?.calculatePriorities(operationsToReduce: ["10", "×", "5"])
+        // Then
+        XCTAssertEqual(result, ["50.0"])
+    }
+    
+    func testGivenFirstNumberIs10AndSecondNumberIs15_WhenAdditionating_AndDividingBy3_ThenResultIs25() {
+        // Given & When
+        var result = calculation?.calculatePriorities(operationsToReduce: ["10", "+", "15", "÷", "3"])
+        result = calculation?.calculateAdditionAndSubtraction(operationsToReduce: result!)
+        // Then
+        XCTAssertEqual(result, ["15.0"])
     }
 
 }
