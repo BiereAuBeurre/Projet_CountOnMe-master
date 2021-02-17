@@ -46,13 +46,18 @@ class ViewController: UIViewController {
         if calculation.expressionHaveResult(elements) {
             calculation.clearText()
         }
-        calculation.calculationView.append(dot)
-    }
+        guard calculation.canAddOperator(elements) && calculation.expressionIsCorrect(elements)  else {
+            showAlert(message: "pas plusieurs points possibles")
+            return
+        }
+            calculation.calculationView.append(dot)
+        }
+//    }
     
     private func forbidDivisionbyZero() {
         if elements[1] == "÷" {
             guard calculation.noDivisionByZero(elements) else {
-                showAlert(message: "Erreur : division par zéro impossible !")
+                showAlert(message: "Division par zéro impossible.")
                 viewDidLoad()
                 return
             }

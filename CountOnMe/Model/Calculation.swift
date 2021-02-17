@@ -22,10 +22,10 @@ class Calculation {
     }
     // MARK: - Public methods
     func expressionIsCorrect(_ elements: [String]) -> Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×"
+        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.last != "."
     }
     func canAddOperator(_ elements: [String]) -> Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×"
+        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.last != "."
     }
     
     func expressionHaveEnoughElement(elements: [String]) -> Bool {
@@ -43,6 +43,9 @@ class Calculation {
     func clearText() {
         calculationView = ""
     }
+//    func checkDot(_ elements: [String]) -> Bool {
+//        return elements.last != "."
+//    }
     
     // MARK: - Calcul methods
      func calculateAdditionAndSubtraction(operationsToReduce: [String]) -> [String]? {
@@ -95,7 +98,15 @@ class Calculation {
     //    calculate the priorities when the calcul contains a division and\or a multiplication
      func calculatePriorities(operationsToReduce: [String]) -> [String]? {
         var prioritiesCalculated: [String] = operationsToReduce
-        if let index = prioritiesCalculated.firstIndex(where: { $0 == "×" || $0 == "÷"}) {
+        // dès qu'un element du tableau correspond à x ou / , on retourne l'index en question
+        // Ici l'index correspond à l'opérateur / ou ÷
+        var priorityIndex: Int?
+        for index in 0..<prioritiesCalculated.count {
+            if prioritiesCalculated[index] == "×" || prioritiesCalculated[index] == "÷" {
+                priorityIndex = index
+            }
+        }
+        if let index = priorityIndex {
             guard let left: Float = Float(prioritiesCalculated[index - 1]) else {
                 return nil
             }
@@ -123,24 +134,4 @@ class Calculation {
         return prioritiesCalculated
     }
 }
-    //        while operationsToReduce.count > 1 {
-    //            let left = Int(operationsToReduce[0])!
-    //            let operand = operationsToReduce[1]
-    //            let right = Int(operationsToReduce[2])!
-    //            let result: String
-    //            // Modifier le result en guard let/if let qui appelera la method du model qui organise la priorisation des calculs
-    //            switch operand {
-    //            case "+": result = addition(firstNumber: left, secondNumber: right)
-    //            case "-": result = soustraction(firstNumber: left, secondNumber: right)
-    //            case "/": result = divide(firstNumber: left, secondNumber: right)
-    //            case "x": result = multiplication(firstNumber: left, secondNumber: right)
-    //            default: fatalError("Unknown operator !")
-    //            }
-    //
-    //            // Making the operation programaticly and cleaning the calcul for the result only (preventing additionals calculation tapped by user before tapping equal button)
-    //            operationsToReduce = Array(operationsToReduce.dropFirst(3))
-    //            operationsToReduce.insert("\(result)", at: 0)
-    //
-    //            // Then update the textView with the result
-    //            calculationView.append(" = \(operationsToReduce.first!)")
-    //        }
+

@@ -285,6 +285,7 @@
                         <outletCollection property="operatorButton" destination="vj1-VF-AV4" collectionClass="NSMutableArray" id="bhy-mo-5Pp"/>
                         <outletCollection property="operatorButton" destination="qFJ-qA-Xgh" collectionClass="NSMutableArray" id="1ph-l9-tdd"/>
                         <outletCollection property="operatorButton" destination="3zr-HC-0N9" collectionClass="NSMutableArray" id="Asx-d1-SUg"/>
+                        <outletCollection property="numberButtons" destination="z7P-f9-38o" collectionClass="NSMutableArray" id="4PL-p7-EWA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7XP-3c-sJZ" sceneMemberID="firstResponder"/>
