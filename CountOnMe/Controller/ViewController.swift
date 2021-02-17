@@ -25,21 +25,31 @@ class ViewController: UIViewController {
         calculation.clearText()
     }
     
-    func showAlert(message: String) {
+    private func showAlert(message: String) {
         let alertVC = UIAlertController(title: "Zéro!", message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         self.present(alertVC, animated: true, completion: nil)
     }
     
-    func calculationButtonTapped(calculatingSymbol: String) {
+    private func calculationButtonTapped(calculatingSymbol: String) {
         if calculation.canAddOperator(elements) {
             calculation.calculationView.append(calculatingSymbol)
         } else {
             showAlert(message: "Un operateur est déja mis !")
         }
     }
+
+    @IBAction func dotButtonTapped(_ sender: UIButton) {
+        guard let dot = sender.title(for: .normal) else {
+            return
+        }
+        if calculation.expressionHaveResult(elements) {
+            calculation.clearText()
+        }
+        calculation.calculationView.append(dot)
+    }
     
-    func forbidDivisionbyZero() {
+    private func forbidDivisionbyZero() {
         if elements[1] == "÷" {
             guard calculation.noDivisionByZero(elements) else {
                 showAlert(message: "Erreur : division par zéro impossible !")
@@ -59,10 +69,10 @@ class ViewController: UIViewController {
         calculation.calculationView.append(numberText)
     }
     
-    @IBAction func ACButton(_ sender: UIButton) {
+    @IBAction func ACButtonTapped(_ sender: UIButton) {
         calculation.clearText()
+
     }
-    
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         if elements.count >= 3 {

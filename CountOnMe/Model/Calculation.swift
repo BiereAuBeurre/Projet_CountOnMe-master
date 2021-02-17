@@ -20,7 +20,7 @@ class Calculation {
             calculationDelegate?.calculationUpdated(calculationView)
         }
     }
-    
+    // MARK: - Public methods
     func expressionIsCorrect(_ elements: [String]) -> Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×"
     }
@@ -45,15 +45,6 @@ class Calculation {
     }
     
     // MARK: - Calcul methods
-    //    func addition(firstNumber: Int, secondNumber: Int) -> String {
-    //        let result = firstNumber + secondNumber
-    //        return "\(result)"
-    //    }
-    //
-    //    func soustraction(firstNumber: Int, secondNumber: Int) -> String {
-    //        let result = firstNumber - secondNumber
-    //        return "\(result)"
-    //    }
      func calculateAdditionAndSubtraction(operationsToReduce: [String]) -> [String]? {
         var additionAndSubtraction: [String] = operationsToReduce
         guard let left: Float = Float(additionAndSubtraction[0]) else {
@@ -74,21 +65,7 @@ class Calculation {
         return additionAndSubtraction
     }
     
-//    func divide (firstNumber: Float, secondNumber:Float) -> String {
-//        let result = firstNumber / secondNumber
-//        return "\(result)"
-//    }
-//    
-//    func multiplication(firstNumber:Float, secondNumber: Float) -> String {
-//        let result = firstNumber * secondNumber
-//        return "\(result)"
-//    }
-    
-    func forbidDivisionbyZero (elements: [String]) -> Bool {
-        return elements[1] == "÷"
-    }
-    
-    @objc func equalExecution( _ elements: [String]) -> String? {
+    func equalExecution( _ elements: [String]) -> String? {
         var operationsToReduce = elements
         while operationsToReduce.count > 1 {
             //        if the first index is a subtraction operator than it's a negative number so it
@@ -112,7 +89,6 @@ class Calculation {
                 }
             }
         }
-        
         return operationsToReduce.first
     }
     
