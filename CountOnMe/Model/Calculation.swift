@@ -8,6 +8,7 @@
 
 protocol CalculationDelegate: class {
     func calculationUpdated(_ calcul: String)
+    func showAlert(_ message: String)
 }
 
 import Foundation
@@ -20,56 +21,62 @@ class Calculation {
             calculationDelegate?.calculationUpdated(calculationView)
         }
     }
+    var elements: [String] {
+        return calculationView.split(separator: " ").map { "\($0)" }
+    }
+    
     // MARK: - Public methods
-    func expressionIsCorrect(_ elements: [String]) -> Bool {
+    
+    func forbidDivisionbyZero() {
+        if elements[1] == "÷" {
+            guard noDivisionByZero() else {
+                calculationDelegate?.showAlert("Division par zéro impossible.")
+                clearText()
+                return
+            }
+        }
+    }
+    
+    func calculationButtonTapped(_ calculatingSymbol: String) {
+        if canAddOperator() {
+            calculationView.append(calculatingSymbol)
+        } else {
+            calculationDelegate?.showAlert("Un operateur est déja mis !")
+        }
+    }
+    
+    func addNumber(numbers: String) {
+        if expressionHaveResult() {
+            clearText()
+        }
+    calculationView.append(numbers)
+    }
+    
+    func expressionIsCorrect() -> Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.last != "."
     }
-    func canAddOperator(_ elements: [String]) -> Bool {
+    func canAddOperator() -> Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.last != "."
     }
     
-    func expressionHaveEnoughElement(elements: [String]) -> Bool {
+    func expressionHaveEnoughElement() -> Bool {
         return elements.count >= 3
     }
     
-    func noDivisionByZero(_ elements: [String]) -> Bool {
+    func noDivisionByZero() -> Bool {
         return elements[2] != "0"
     }
     
-    func expressionHaveResult(_ elements: [String]) -> Bool {
+    func expressionHaveResult() -> Bool {
         return elements.contains("=")
     }
     
     func clearText() {
         calculationView = ""
     }
-//    func checkDot(_ elements: [String]) -> Bool {
-//        return elements.last != "."
-//    }
-    
-    // MARK: - Calcul methods
-     func calculateAdditionAndSubtraction(operationsToReduce: [String]) -> [String]? {
-        var additionAndSubtraction: [String] = operationsToReduce
-        guard let left: Float = Float(additionAndSubtraction[0]) else {
-            return nil
-        }
-        let operand = additionAndSubtraction[1]
-        guard let right: Float = Float(additionAndSubtraction[2]) else {
-            return nil
-        }
-        let result: Float
-        switch operand {
-        case "+": result = left + right
-        case "-": result = left - right
-        default: return nil
-        }
-        additionAndSubtraction = Array(additionAndSubtraction.dropFirst(3))
-        additionAndSubtraction.insert("\(result)", at: 0)
-        return additionAndSubtraction
-    }
-    
-    func equalExecution( _ elements: [String]) -> String? {
+    func equalExecution() -> String? {
         var operationsToReduce = elements
+        
         while operationsToReduce.count > 1 {
             //        if the first index is a subtraction operator than it's a negative number so it
             //        merges the first and the second index
@@ -77,6 +84,7 @@ class Calculation {
                 operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
                 operationsToReduce.remove(at: 1)
             }
+            
             while operationsToReduce.contains("×") || operationsToReduce.contains("÷") {
                 if let result = calculatePriorities(operationsToReduce: operationsToReduce) {
                     operationsToReduce = result
@@ -84,7 +92,7 @@ class Calculation {
                     return nil
                 }
             }
-            while expressionHaveEnoughElement(elements: operationsToReduce) {
+            while operationsToReduce.count > 1 {
                 if let result = calculateAdditionAndSubtraction(operationsToReduce: operationsToReduce) {
                     operationsToReduce = result
                 } else {
@@ -94,6 +102,25 @@ class Calculation {
         }
         return operationsToReduce.first
     }
+    // MARK: - Calcul methods
+    
+    func calculatingAndDiplayingResult() {
+        if elements.count >= 3 {
+            guard expressionIsCorrect() else {
+                calculationDelegate?.showAlert("Entrez une expression correcte !")
+                return
+            }
+            forbidDivisionbyZero()
+            if let result: String = equalExecution() {
+               calculationView.append(" = \(result)")
+            }
+            
+        } else {
+            calculationDelegate?.showAlert("Entrez un calcul correct")
+            return
+        }
+    }
+    
     
     //    calculate the priorities when the calcul contains a division and\or a multiplication
      func calculatePriorities(operationsToReduce: [String]) -> [String]? {
@@ -133,5 +160,31 @@ class Calculation {
         }
         return prioritiesCalculated
     }
+    
+    func calculateAdditionAndSubtraction(operationsToReduce: [String]) -> [String]? {
+        var additionAndSubtraction: [String] = operationsToReduce
+        guard let left: Float = Float(additionAndSubtraction[0]) else {
+            return nil
+        }
+        let operand = additionAndSubtraction[1]
+        guard let right: Float = Float(additionAndSubtraction[2]) else {
+            return nil
+        }
+        let result: Float
+        switch operand {
+        case "+": result = left + right
+        case "-": result = left - right
+        default: return nil
+        }
+        additionAndSubtraction = Array(additionAndSubtraction.dropFirst(3))
+        additionAndSubtraction.insert("\(result)", at: 0)
+        return additionAndSubtraction
+    }
+
 }
 
+extension Float {
+    var clean: String {
+       return self.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", self) : String(self)
+    }
+}

@@ -9,14 +9,10 @@
 import UIKit
 
 class ViewController: UIViewController {
-    @IBOutlet weak var textView: UITextView!
-    @IBOutlet var numberButtons: [UIButton]!
-    @IBOutlet var operatorButton: [UIButton]!
     
+    @IBOutlet weak var textView: UITextView!
     let calculation = Calculation()
-    var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
-    }
+    
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,87 +21,64 @@ class ViewController: UIViewController {
         calculation.clearText()
     }
     
-    private func showAlert(message: String) {
-        let alertVC = UIAlertController(title: "Zéro!", message: message, preferredStyle: .alert)
-        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        self.present(alertVC, animated: true, completion: nil)
-    }
+//    private func forbidDivisionbyZero() {
+//        if calculation.elements[1] == "÷" {
+//            guard calculation.noDivisionByZero() else {
+//                showAlert("Division par zéro impossible.")
+//                viewDidLoad()
+//                return
+//            }
+//        }
+//    }
     
-    private func calculationButtonTapped(calculatingSymbol: String) {
-        if calculation.canAddOperator(elements) {
-            calculation.calculationView.append(calculatingSymbol)
-        } else {
-            showAlert(message: "Un operateur est déja mis !")
-        }
-    }
+//    private func calculationButtonTapped(calculatingSymbol: String) {
+//        if calculation.canAddOperator() {
+//            calculation.calculationView.append(calculatingSymbol)
+//        } else {
+//            showAlert("Un operateur est déja mis !")
+//        }
+//    }
 
     @IBAction func dotButtonTapped(_ sender: UIButton) {
         guard let dot = sender.title(for: .normal) else {
             return
         }
-        if calculation.expressionHaveResult(elements) {
+        if calculation.expressionHaveResult() {
             calculation.clearText()
         }
-        guard calculation.canAddOperator(elements) && calculation.expressionIsCorrect(elements)  else {
-            showAlert(message: "pas plusieurs points possibles")
-            return
-        }
-            calculation.calculationView.append(dot)
-        }
-//    }
-    
-    private func forbidDivisionbyZero() {
-        if elements[1] == "÷" {
-            guard calculation.noDivisionByZero(elements) else {
-                showAlert(message: "Division par zéro impossible.")
-                viewDidLoad()
-                return
-            }
-        }
+        calculation.calculationView.append(dot)
     }
     // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
         guard let numberText = sender.title(for: .normal) else {
             return
         }
-        if calculation.expressionHaveResult(elements) {
-            calculation.clearText()
-        }
-        calculation.calculationView.append(numberText)
+        calculation.addNumber(numbers: numberText)
     }
     
     @IBAction func ACButtonTapped(_ sender: UIButton) {
         calculation.clearText()
-
     }
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
-        if elements.count >= 3 {
-            guard calculation.expressionIsCorrect(elements) else {
-                showAlert(message: "Entrez une expression correcte !")
-                return
-            }
-            forbidDivisionbyZero()
-            if let result: String = calculation.equalExecution(elements) {
-                textView.text.append(" = \(result)")
-            }
-        } else {
-            showAlert(message: "Entrez un calcul correct")
-            return
-        }
+        calculation.calculatingAndDiplayingResult()
     }
     
     @IBAction func tappedOperatorButton(_ sender: UIButton) {
         guard let operatorSymbol = sender.title(for: .normal) else {
             return
         }
-        calculationButtonTapped(calculatingSymbol: " \(operatorSymbol) ")
+        calculation.calculationButtonTapped(" \(operatorSymbol) ")
     }
-    
 }
 
 extension ViewController: CalculationDelegate {
     func calculationUpdated(_ calcul: String) {
         textView.text = calcul
+    }
+    func showAlert(_ message: String) {
+        let alertVC = UIAlertController(title: "Zéro!", message: message, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        self.present(alertVC, animated: true, completion: nil)
     }
 }

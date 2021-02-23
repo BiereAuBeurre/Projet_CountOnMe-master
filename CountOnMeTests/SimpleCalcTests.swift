@@ -51,4 +51,12 @@ class SimpleCalcTests: XCTestCase {
         // Then
         XCTAssertEqual(result, ["15.0"])
     }
+    func testGivenFirstNumberIs4_WhenAdditionnatingByAddingTwiceTheSymbol_ThenFalsecanAddOperator() {
+        // Given
+        calculation?.addNumber(numbers: "4")
+        calculation?.addNumber(numbers: "+")
+        calculation?.addNumber(numbers: "+")
+        
+    }
+    
 }
