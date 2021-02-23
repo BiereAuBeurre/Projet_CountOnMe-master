@@ -21,32 +21,11 @@ class ViewController: UIViewController {
         calculation.clearText()
     }
     
-//    private func forbidDivisionbyZero() {
-//        if calculation.elements[1] == "÷" {
-//            guard calculation.noDivisionByZero() else {
-//                showAlert("Division par zéro impossible.")
-//                viewDidLoad()
-//                return
-//            }
-//        }
-//    }
-    
-//    private func calculationButtonTapped(calculatingSymbol: String) {
-//        if calculation.canAddOperator() {
-//            calculation.calculationView.append(calculatingSymbol)
-//        } else {
-//            showAlert("Un operateur est déja mis !")
-//        }
-//    }
-
     @IBAction func dotButtonTapped(_ sender: UIButton) {
         guard let dot = sender.title(for: .normal) else {
             return
         }
-        if calculation.expressionHaveResult() {
-            calculation.clearText()
-        }
-        calculation.calculationView.append(dot)
+        calculation.addNumber(numbers: dot)
     }
     // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
