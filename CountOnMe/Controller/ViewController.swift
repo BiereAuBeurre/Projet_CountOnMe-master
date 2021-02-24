@@ -44,10 +44,11 @@ class ViewController: UIViewController {
     }
     
     @IBAction func tappedOperatorButton(_ sender: UIButton) {
+//        calculation.addSymbol(symbols: operatorSymbol)
         guard let operatorSymbol = sender.title(for: .normal) else {
             return
         }
-        calculation.calculationButtonTapped(" \(operatorSymbol) ")
+        calculation.addCalculatingSymbol(" \(operatorSymbol) ")
     }
 }
 

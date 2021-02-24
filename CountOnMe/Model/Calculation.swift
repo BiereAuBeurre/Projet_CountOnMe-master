@@ -26,16 +26,13 @@ class Calculation {
     }
     
     // MARK: - Private methods
-    private func expressionIsCorrect() -> Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.last != "."
-    }
-    func canAddOperator() -> Bool {
+    func expressionIsCorrect() -> Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.last != "."
     }
     private func expressionHaveEnoughElement() -> Bool {
         return elements.count >= 3
     }
-    private func divisionByZeroAsked() -> Bool {
+    private func noDivisionByZero() -> Bool {
         return elements[2] != "0"
     }
     private func expressionHaveResult() -> Bool {
@@ -43,7 +40,7 @@ class Calculation {
     }
     private func forbidDivisionbyZero() {
         if elements[1] == "÷" {
-            guard divisionByZeroAsked() else {
+            guard noDivisionByZero() else {
                 calculationDelegate?.showAlert("Division par zéro impossible.")
                 clearText()
                 return
@@ -78,44 +75,90 @@ class Calculation {
     /// Calculate the priorities when the calcul contains  division and\or multiplication.
     func calculatePriorities(operationsToReduce: [String]) -> [String]? {
         var prioritiesCalculated: [String] = operationsToReduce
-        /// As soon as an element in the pirioritiesCalculated array matches "x" or "÷", we return the index where its placed (there'll be an optionnal priorityIndex created and so the if let condition in line 97 will be executed).
-        var priorityIndex: Int?
-        for index in 0..<prioritiesCalculated.count {
-            if prioritiesCalculated[index] == "×" || prioritiesCalculated[index] == "÷" {
-                priorityIndex = index
-            }
-        }
-        if let index = priorityIndex {
-            guard let left: Float = Float(prioritiesCalculated[index - 1]) else {
-                return nil
-            }
-            let operand = prioritiesCalculated[index]
-            guard let right: Float = Float(prioritiesCalculated[index + 1]) else {
-                return nil
-            }
-            let result: Float
-            switch operand {
-            case "×":
-                result = left * right
-            case "÷":
-                if divisionByZeroAsked() { /// anciennement : if right == 0, n'affichait pas d'erreur, stop juste l'appli
-                    calculationDelegate?.showAlert("Division par zéro impossible.")
-                    prioritiesCalculated.remove(at: index)
-                    prioritiesCalculated.remove(at: index)
-                    calculationView = "\(prioritiesCalculated.joined())"
-                    /// fonctionne seulement le tableau apparait de façon brute
+        /// As soon as an element in the pirioritiesCalculated array matches "x" or "÷", we return the index where its placed (there'll be an optionnal priorityIndex created and so the if let condition in following lines will be executed).
+//        var priorityIndex: Int?
+//        for index in 0..<prioritiesCalculated.count {
+//            if prioritiesCalculated[index] == "×" || prioritiesCalculated[index] == "÷" {
+//                priorityIndex = index
+//            }
+//        }
+//        if let index = priorityIndex {
+//            guard let left: Float = Float(prioritiesCalculated[index - 1]) else {
+//                return nil
+//            }
+//            let operand = prioritiesCalculated[index]
+//            guard let right: Float = Float(prioritiesCalculated[index + 1]) else {
+//                return nil
+//            }
+//            let result: Float
+//            switch operand {
+//            case "×":
+//                result = left * right
+//            case "÷":
+//                if right == 0 {
+//                    calculationDelegate?.showAlert("Division par zéro impossible.")
 //                    clearText()
-                    return prioritiesCalculated
+//                    return nil
+//                } else {
+//                    result = left / right
+//                }
+//            default:
+//                return nil
+//            }
+//            prioritiesCalculated[index - 1] = "\(result)"
+//            prioritiesCalculated.remove(at: index)
+//            prioritiesCalculated.remove(at: index)
+//        }
+        
+        for element in prioritiesCalculated {
+            if element == "×" {
+                guard let left: Float = Float(prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!-1]) else {
+                    return nil
                 }
-                else {
-                    result = left / right
+                let operand = prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!]
+                guard let right = Float(prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!+1]) else {
+                    return nil
                 }
-            default:
-                return nil
+                let result: Float
+                switch operand {
+                case "×":
+                    result = left * right
+                default:
+                    return nil
+                }
+                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!+1)
+                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!-1)
+                prioritiesCalculated.insert("\(result)", at: prioritiesCalculated.firstIndex(of: element)!)
+//                prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!] = "\(result)"
+                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!)
             }
-            prioritiesCalculated[index - 1] = "\(result)"
-            prioritiesCalculated.remove(at: index)
-            prioritiesCalculated.remove(at: index)
+            if element == "÷" {
+                guard let left: Float = Float(prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!-1]) else {
+                    return nil
+                }
+                let operand = prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!]
+                guard let right = Float(prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!+1]) else {
+                    return nil
+                }
+                let result: Float
+                switch operand {
+                case "÷":
+                    if right == 0 {
+                        calculationDelegate?.showAlert("Division par zéro impossible.")
+                        clearText()
+                        return nil
+                    } else {
+                        result = left / right
+                    }
+                default:
+                    return nil
+                }
+                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!+1)
+                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!-1)
+                prioritiesCalculated.insert("\(result)", at: prioritiesCalculated.firstIndex(of: element)!)
+//                prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!] = "\(result)"
+                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!)
+            }
         }
         return prioritiesCalculated
     }
@@ -149,9 +192,8 @@ class Calculation {
         }
         calculationView.append(numbers)
     }
-    
-    func calculationButtonTapped(_ calculatingSymbol: String) {
-        if canAddOperator() {
+    func addCalculatingSymbol(_ calculatingSymbol: String) {
+        if expressionIsCorrect() {
             calculationView.append(calculatingSymbol)
         } else {
             calculationDelegate?.showAlert("Un operateur est déja mis !")

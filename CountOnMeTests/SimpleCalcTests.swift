@@ -10,7 +10,7 @@ import XCTest
 @testable import CountOnMe
 
 class SimpleCalcTests: XCTestCase {
-    var calculation: Calculation?
+    var calculation: Calculation!
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         calculation = Calculation()
@@ -51,12 +51,11 @@ class SimpleCalcTests: XCTestCase {
         // Then
         XCTAssertEqual(result, ["15.0"])
     }
-//    func testGivenFirstNumberIs4_WhenAdditionnatingByAddingTwiceTheSymbol_ThenFalsecanAddOperator() {
-//        // Given
-//        calculation?.addNumber(numbers: "4")
-//        calculation?.addNumber(numbers: "+")
-////        calculation?.addNumber(numbers: "+")
-//        XCTAssertFalse(calculation!.canAddOperator())
-//    }
-    
+    func testGivenFirstNumberIs4_WhenAdditionnatingByAddingTwiceTheSymbol_ThenFalsecanAddOperator() {
+        // Given
+        calculation.addNumber(numbers: "4")
+        calculation.addCalculatingSymbol(" + ")
+        calculation.addCalculatingSymbol(" + ")
+        XCTAssertFalse(calculation.expressionIsCorrect())
+    }
 }
