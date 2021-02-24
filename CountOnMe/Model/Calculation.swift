@@ -21,13 +21,13 @@ class Calculation {
             delegate?.calculationUpdated(displayableCalculText)
         }
     }
-    var elements: [String] {
+    private var elements: [String] {
         return displayableCalculText.split(separator: " ").map { "\($0)" }
     }
     
     // MARK: - Private methods
     func expressionIsCorrect() -> Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.last != "."
+        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×"
     }
     private func expressionHaveEnoughElement() -> Bool {
         return elements.count >= 3
@@ -47,41 +47,42 @@ class Calculation {
             }
         }
     }
+    
     private func equalExecution() -> String? {
         var operationsToReduce = elements
         while operationsToReduce.count > 1 {
             /// If the 1st element is a "-"" operator then it's gonna be a negative number, so it merges the 1st and the 2nd index in a unique value at index [0].
-            if operationsToReduce[0] == "-" {
+            if operationsToReduce[0].contains("-") { // ou operationsToReduce[0] == "-"
                 operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
                 operationsToReduce.remove(at: 1)
             }
             while operationsToReduce.contains("×") || operationsToReduce.contains("÷") {
-                guard let result = calculatePriorities(operationsToReduce: operationsToReduce) else {
+                guard let result = calculateDivisionAndMultiplicationInOrder(operationsToReduce: operationsToReduce) else {
                     return nil
                 }
                 operationsToReduce = result
             }
-            while operationsToReduce.count > 1 {
-                guard let result = calculateAdditionAndSubtraction(operationsToReduce: operationsToReduce) else {
+//            while operationsToReduce.count > 1 {
+                guard let result = calculateAdditionAndSubstraction(operationsToReduce: operationsToReduce) else {
                     return nil
                 }
                 operationsToReduce = result
-            }
+//            }
         }
         return operationsToReduce.first
     }
     // MARK: - Private calcul methods
     
-    /// Calculate the priorities when the calcul contains  division and\or multiplication.
-    func calculatePriorities(operationsToReduce: [String]) -> [String]? {
-        var prioritiesCalculated: [String] = operationsToReduce        
-        for element in prioritiesCalculated {
+    /// Execute the prioritized calcul (contains division and\or multiplication).
+    func calculateDivisionAndMultiplicationInOrder(operationsToReduce: [String]) -> [String]? {
+        var elementsOfCalculation: [String] = operationsToReduce
+        for element in elementsOfCalculation {
             if element == "×" {
-                guard let left: Float = Float(prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!-1]) else {
+                guard let left: Float = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!-1]) else {
                     return nil
                 }
-                let operand = prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!]
-                guard let right = Float(prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!+1]) else {
+                let operand = elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!]
+                guard let right = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!+1]) else {
                     return nil
                 }
                 let result: Float
@@ -91,18 +92,17 @@ class Calculation {
                 default:
                     return nil
                 }
-                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!+1)
-                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!-1)
-                prioritiesCalculated.insert("\(result)", at: prioritiesCalculated.firstIndex(of: element)!)
-//                prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!] = "\(result)"
-                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!)
+                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!+1)
+                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!-1)
+                elementsOfCalculation.insert("\(result)", at: elementsOfCalculation.firstIndex(of: element)!)
+                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!)
             }
             if element == "÷" {
-                guard let left: Float = Float(prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!-1]) else {
+                guard let left: Float = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!-1]) else {
                     return nil
                 }
-                let operand = prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!]
-                guard let right = Float(prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!+1]) else {
+                let operand = elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!]
+                guard let right = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!+1]) else {
                     return nil
                 }
                 let result: Float
@@ -118,23 +118,22 @@ class Calculation {
                 default:
                     return nil
                 }
-                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!+1)
-                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!-1)
-                prioritiesCalculated.insert("\(result)", at: prioritiesCalculated.firstIndex(of: element)!)
-//                prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!] = "\(result)"
-                prioritiesCalculated.remove(at: prioritiesCalculated.firstIndex(of: element)!)
+                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!+1)
+                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!-1)
+                elementsOfCalculation.insert("\(result)", at: elementsOfCalculation.firstIndex(of: element)!)
+                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!)
             }
         }
-        return prioritiesCalculated
+        return elementsOfCalculation
     }
-    
-    func calculateAdditionAndSubtraction(operationsToReduce: [String]) -> [String]? {
-        var additionAndSubtraction: [String] = operationsToReduce
-        guard let left: Float = Float(additionAndSubtraction[0]) else {
+
+    func calculateAdditionAndSubstraction(operationsToReduce: [String]) -> [String]? {
+        var additionAndSubstraction: [String] = operationsToReduce
+        guard let left = Float(additionAndSubstraction[0]) else {
             return nil
         }
-        let operand = additionAndSubtraction[1]
-        guard let right: Float = Float(additionAndSubtraction[2]) else {
+        let operand = additionAndSubstraction[1]
+        guard let right = Float(additionAndSubstraction[2]) else {
             return nil
         }
         let result: Float
@@ -143,9 +142,9 @@ class Calculation {
         case "-": result = left - right
         default: return nil
         }
-        additionAndSubtraction = Array(additionAndSubtraction.dropFirst(3))
-        additionAndSubtraction.insert("\(result)", at: 0)
-        return additionAndSubtraction
+        additionAndSubstraction = Array(additionAndSubstraction.dropFirst(3))
+        additionAndSubstraction.insert("\(result)", at: 0)
+        return additionAndSubstraction
     }
     // MARK: - Public methods
     func clearText() {

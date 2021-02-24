@@ -9,7 +9,6 @@
 import UIKit
 
 final class CalculationViewController: UIViewController {
-    
     @IBOutlet private weak var textView: UITextView!
     private let calculation = Calculation()
     
@@ -23,30 +22,20 @@ final class CalculationViewController: UIViewController {
 }
 
 private extension CalculationViewController {
-    @IBAction func didTapDotButton(_ sender: UIButton) {
-        guard let dot = sender.title(for: .normal) else {
-            return
-        }
-        calculation.addNumber(numbers: dot)
-    }
     // View actions
-    @IBAction func tappedNumberButton(_ sender: UIButton) {
+    @IBAction func didTapNumberButton(_ sender: UIButton) {
         guard let numberText = sender.title(for: .normal) else {
             return
         }
         calculation.addNumber(numbers: numberText)
     }
-    
-    @IBAction func ACButtonTapped(_ sender: UIButton) {
+    @IBAction func didTapACButton(_ sender: UIButton) {
         calculation.clearText()
     }
-    
-    @IBAction func tappedEqualButton(_ sender: UIButton) {
+    @IBAction func didTapEqualButton(_ sender: UIButton) {
         calculation.calculatingAndDiplayingResult()
     }
-    
-    @IBAction func tappedOperatorButton(_ sender: UIButton) {
-//        calculation.addSymbol(symbols: operatorSymbol)
+    @IBAction func didTapOperatorButton(_ sender: UIButton) {
         guard let operatorSymbol = sender.title(for: .normal) else {
             return
         }
