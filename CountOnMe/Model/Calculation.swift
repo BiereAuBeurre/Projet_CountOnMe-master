@@ -15,14 +15,14 @@ import Foundation
 
 class Calculation {
     // MARK: -Model properties
-    var calculationDelegate: CalculationDelegate?
-    var calculationView: String = "" {
+    var delegate: CalculationDelegate?
+    private var displayableCalculText: String = "" {
         didSet {
-            calculationDelegate?.calculationUpdated(calculationView)
+            delegate?.calculationUpdated(displayableCalculText)
         }
     }
     var elements: [String] {
-        return calculationView.split(separator: " ").map { "\($0)" }
+        return displayableCalculText.split(separator: " ").map { "\($0)" }
     }
     
     // MARK: - Private methods
@@ -41,7 +41,7 @@ class Calculation {
     private func forbidDivisionbyZero() {
         if elements[1] == "÷" {
             guard noDivisionByZero() else {
-                calculationDelegate?.showAlert("Division par zéro impossible.")
+                delegate?.showAlert("Division par zéro impossible.")
                 clearText()
                 return
             }
@@ -74,42 +74,7 @@ class Calculation {
     
     /// Calculate the priorities when the calcul contains  division and\or multiplication.
     func calculatePriorities(operationsToReduce: [String]) -> [String]? {
-        var prioritiesCalculated: [String] = operationsToReduce
-        /// As soon as an element in the pirioritiesCalculated array matches "x" or "÷", we return the index where its placed (there'll be an optionnal priorityIndex created and so the if let condition in following lines will be executed).
-//        var priorityIndex: Int?
-//        for index in 0..<prioritiesCalculated.count {
-//            if prioritiesCalculated[index] == "×" || prioritiesCalculated[index] == "÷" {
-//                priorityIndex = index
-//            }
-//        }
-//        if let index = priorityIndex {
-//            guard let left: Float = Float(prioritiesCalculated[index - 1]) else {
-//                return nil
-//            }
-//            let operand = prioritiesCalculated[index]
-//            guard let right: Float = Float(prioritiesCalculated[index + 1]) else {
-//                return nil
-//            }
-//            let result: Float
-//            switch operand {
-//            case "×":
-//                result = left * right
-//            case "÷":
-//                if right == 0 {
-//                    calculationDelegate?.showAlert("Division par zéro impossible.")
-//                    clearText()
-//                    return nil
-//                } else {
-//                    result = left / right
-//                }
-//            default:
-//                return nil
-//            }
-//            prioritiesCalculated[index - 1] = "\(result)"
-//            prioritiesCalculated.remove(at: index)
-//            prioritiesCalculated.remove(at: index)
-//        }
-        
+        var prioritiesCalculated: [String] = operationsToReduce        
         for element in prioritiesCalculated {
             if element == "×" {
                 guard let left: Float = Float(prioritiesCalculated[prioritiesCalculated.firstIndex(of: element)!-1]) else {
@@ -144,7 +109,7 @@ class Calculation {
                 switch operand {
                 case "÷":
                     if right == 0 {
-                        calculationDelegate?.showAlert("Division par zéro impossible.")
+                        delegate?.showAlert("Division par zéro impossible.")
                         clearText()
                         return nil
                     } else {
@@ -184,34 +149,34 @@ class Calculation {
     }
     // MARK: - Public methods
     func clearText() {
-        calculationView = ""
+        displayableCalculText = ""
     }
     func addNumber(numbers: String) {
         if expressionHaveResult() {
             clearText()
         }
-        calculationView.append(numbers)
+        displayableCalculText.append(numbers)
     }
     func addCalculatingSymbol(_ calculatingSymbol: String) {
         if expressionIsCorrect() {
-            calculationView.append(calculatingSymbol)
+            displayableCalculText.append(calculatingSymbol)
         } else {
-            calculationDelegate?.showAlert("Un operateur est déja mis !")
+            delegate?.showAlert("Un operateur est déja mis !")
         }
     }
     
     func calculatingAndDiplayingResult() {
         if expressionHaveEnoughElement() {
             guard expressionIsCorrect() else {
-                calculationDelegate?.showAlert("Entrez une expression correcte !")
+                delegate?.showAlert("Entrez une expression correcte !")
                 return
             }
             forbidDivisionbyZero()
             if let result: String = equalExecution() {
-                calculationView.append(" = \(result)")
+                displayableCalculText.append(" = \(result)")
             }
         } else {
-            calculationDelegate?.showAlert("Entrez un calcul correct")
+            delegate?.showAlert("Entrez un calcul correct")
             return
         }
     }

@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CalculationViewController.swift
 //  SimpleCalc
 //
 //  Created by Vincent Saluzzo on 29/03/2019.
@@ -8,20 +8,22 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+final class CalculationViewController: UIViewController {
     
-    @IBOutlet weak var textView: UITextView!
-    let calculation = Calculation()
+    @IBOutlet private weak var textView: UITextView!
+    private let calculation = Calculation()
     
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        calculation.calculationDelegate = self
+        calculation.delegate = self
         calculation.clearText()
     }
-    
-    @IBAction func dotButtonTapped(_ sender: UIButton) {
+}
+
+private extension CalculationViewController {
+    @IBAction func didTapDotButton(_ sender: UIButton) {
         guard let dot = sender.title(for: .normal) else {
             return
         }
@@ -52,7 +54,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: CalculationDelegate {
+extension CalculationViewController: CalculationDelegate {
     func calculationUpdated(_ calcul: String) {
         textView.text = calcul
     }
