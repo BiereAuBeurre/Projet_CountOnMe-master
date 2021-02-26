@@ -47,14 +47,25 @@ final class Calculation {
     private func expressionHaveResult() -> Bool {
         return elements.contains("=")
     }
+    
+    private func reduceNegativeNumber(_ negativeValue: [String]) -> [String]? {
+        var operationsToReduce = negativeValue
+        if operationsToReduce[0].contains("-") {
+            operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
+            operationsToReduce.remove(at: 1)
+        }
+        return operationsToReduce
+    }
+    
     private func equalExecution() -> String? {
         var operationsToReduce = elements
         while operationsToReduce.count > 1 {
             /// If the 1st element is a "-"" operator then it's gonna be a negative number, so it merges the 1st and the 2nd index in a unique value at index [0].
-            if operationsToReduce[0].contains("-") {
-                operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
-                operationsToReduce.remove(at: 1)
-            }
+            operationsToReduce = reduceNegativeNumber(operationsToReduce)!
+//            if operationsToReduce[0].contains("-") {
+//                operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
+//                operationsToReduce.remove(at: 1)
+//            }
             while operationsToReduce.contains("×") || operationsToReduce.contains("÷") {
                 guard let result = calculateDivisionAndMultiplicationInOrder(operationsToReduce) else {
                     return nil
