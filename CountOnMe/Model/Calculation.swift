@@ -13,7 +13,7 @@ protocol CalculationDelegate: class {
 
 import Foundation
 
-class Calculation {
+final class Calculation {
     // MARK: -Model properties
     var delegate: CalculationDelegate?
     private var displayableCalculText: String = "" {
@@ -26,17 +26,8 @@ class Calculation {
     }
     
     // MARK: - Private methods
-    func expressionIsCorrect() -> Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×"
-    }
-    private func expressionHaveEnoughElement() -> Bool {
-        return elements.count >= 3
-    }
     private func noDivisionByZero() -> Bool {
         return elements[2] != "0"
-    }
-    private func expressionHaveResult() -> Bool {
-        return elements.contains("=")
     }
     private func forbidDivisionbyZero() {
         if elements[1] == "÷" {
@@ -47,12 +38,20 @@ class Calculation {
             }
         }
     }
-    
+    func expressionIsCorrect() -> Bool {
+        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×"
+    }
+    private func expressionHaveEnoughElement() -> Bool {
+        return elements.count >= 3
+    }
+    private func expressionHaveResult() -> Bool {
+        return elements.contains("=")
+    }
     private func equalExecution() -> String? {
         var operationsToReduce = elements
         while operationsToReduce.count > 1 {
             /// If the 1st element is a "-"" operator then it's gonna be a negative number, so it merges the 1st and the 2nd index in a unique value at index [0].
-            if operationsToReduce[0].contains("-") { // ou operationsToReduce[0] == "-"
+            if operationsToReduce[0].contains("-") {
                 operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
                 operationsToReduce.remove(at: 1)
             }
@@ -62,23 +61,19 @@ class Calculation {
                 }
                 operationsToReduce = result
             }
-//            while operationsToReduce.count > 1 {
+            while operationsToReduce.count > 1 {
                 guard let result = calculateAdditionAndSubstraction(operationsToReduce) else {
                     return nil
                 }
                 operationsToReduce = result
-//            }
+            }
         }
         return operationsToReduce.first
     }
-    // MARK: - Private calcul methods
+    // MARK: - Calcul methods
     
-    
-    
-//     test pour reduire fonction calculateDivisionAndMultiplicationInOrder()
-     
-    func definingLeftOperandRightValues(_ elementsOfCalculation: [String], _ element: String) -> [String]? {
-        var values: [String] = elementsOfCalculation
+    func definingLeftOperandRightValuesForPriorities(_ elementsOfCalculation: [String], _ element: String) -> [String]? {
+        var values = elementsOfCalculation
         guard let left: Float = Float(values[values.firstIndex(of: element)!-1]) else {
             return nil
         }
@@ -96,15 +91,13 @@ class Calculation {
                 clearText()
                 return nil
             } else {
+                forbidDivisionbyZero()
                 result = left / right
             }
         default:
             return nil
         }
-        values.remove(at: values.firstIndex(of: element)!+1)
-        values.remove(at: values.firstIndex(of: element)!-1)
-        values.insert("\(result)", at: values.firstIndex(of: element)!)
-        values.remove(at: values.firstIndex(of: element)!)
+        values.remove(at: values.firstIndex(of: element)!+1); values.remove(at: values.firstIndex(of: element)!-1); values.insert("\(result)", at: values.firstIndex(of: element)!); values.remove(at: values.firstIndex(of: element)!)
         return values
     }
     
@@ -112,79 +105,12 @@ class Calculation {
         var elementsOfCalculation: [String] = operationsToReduce
         for element in elementsOfCalculation {
             if element == "×" || element == "÷" {
-                elementsOfCalculation = definingLeftOperandRightValues(operationsToReduce, element)!
+                elementsOfCalculation = definingLeftOperandRightValuesForPriorities(operationsToReduce, element)!
             }
         }
         return elementsOfCalculation
     }
-        /*
-     
-     func executeMultiplicationAndDivision(elementsOfCalculation: [String]) {
-        for element in elementsOfCalculation {
-            if element == "×" || element == "÷"{
-            definingLeftOperandRightValues(elementsOfCalculation: elementsOfCalculation)
-            }
-        }
-     }
-     
-     */
-     
-     
     
-    /// Execute the prioritized calcul (contains division and\or multiplication).
-//    func calculateDivisionAndMultiplicationInOrder(_ operationsToReduce: [String]) -> [String]? {
-//        var elementsOfCalculation: [String] = operationsToReduce
-//        for element in elementsOfCalculation {
-//            if element == "×" {
-//                guard let left: Float = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!-1]) else {
-//                    return nil
-//                }
-//                let operand = elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!]
-//                guard let right = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!+1]) else {
-//                    return nil
-//                }
-//                let result: Float
-//                switch operand {
-//                case "×":
-//                    result = left * right
-//                default:
-//                    return nil
-//                }
-//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!+1)
-//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!-1)
-//                elementsOfCalculation.insert("\(result)", at: elementsOfCalculation.firstIndex(of: element)!)
-//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!)
-//            }
-//            if element == "÷" {
-//                guard let left: Float = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!-1]) else {
-//                    return nil
-//                }
-//                let operand = elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!]
-//                guard let right = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!+1]) else {
-//                    return nil
-//                }
-//                let result: Float
-//                switch operand {
-//                case "÷":
-//                    if right == 0 {
-//                        delegate?.showAlert("Division par zéro impossible.")
-//                        clearText()
-//                        return nil
-//                    } else {
-//                        result = left / right
-//                    }
-//                default:
-//                    return nil
-//                }
-//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!+1)
-//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!-1)
-//                elementsOfCalculation.insert("\(result)", at: elementsOfCalculation.firstIndex(of: element)!)
-//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!)
-//            }
-//        }
-//        return elementsOfCalculation
-//    }
-
     func calculateAdditionAndSubstraction(_ operationsToReduce: [String]) -> [String]? {
         var additionAndSubstraction: [String] = operationsToReduce
         guard let left = Float(additionAndSubstraction[0]) else {
@@ -200,8 +126,7 @@ class Calculation {
         case "-": result = left - right
         default: return nil
         }
-        additionAndSubstraction = Array(additionAndSubstraction.dropFirst(3))
-        additionAndSubstraction.insert("\(result)", at: 0)
+        additionAndSubstraction = Array(additionAndSubstraction.dropFirst(3)); additionAndSubstraction.insert("\(result)", at: 0)
         return additionAndSubstraction
     }
     // MARK: - Public methods
@@ -221,14 +146,13 @@ class Calculation {
             delegate?.showAlert("Un operateur est déja mis !")
         }
     }
-    
     func calculatingAndDiplayingResult() {
         if expressionHaveEnoughElement() {
             guard expressionIsCorrect() else {
                 delegate?.showAlert("Entrez une expression correcte !")
                 return
             }
-//            forbidDivisionbyZero()
+            forbidDivisionbyZero()
             if let result: String = equalExecution() {
                 displayableCalculText.append(" = \(result)")
             }
@@ -237,5 +161,5 @@ class Calculation {
             return
         }
     }
+    
 }
-
