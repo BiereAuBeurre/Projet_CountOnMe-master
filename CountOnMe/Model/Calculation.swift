@@ -57,13 +57,13 @@ class Calculation {
                 operationsToReduce.remove(at: 1)
             }
             while operationsToReduce.contains("×") || operationsToReduce.contains("÷") {
-                guard let result = calculateDivisionAndMultiplicationInOrder(operationsToReduce: operationsToReduce) else {
+                guard let result = calculateDivisionAndMultiplicationInOrder(operationsToReduce) else {
                     return nil
                 }
                 operationsToReduce = result
             }
 //            while operationsToReduce.count > 1 {
-                guard let result = calculateAdditionAndSubstraction(operationsToReduce: operationsToReduce) else {
+                guard let result = calculateAdditionAndSubstraction(operationsToReduce) else {
                     return nil
                 }
                 operationsToReduce = result
@@ -73,61 +73,119 @@ class Calculation {
     }
     // MARK: - Private calcul methods
     
-    /// Execute the prioritized calcul (contains division and\or multiplication).
-    func calculateDivisionAndMultiplicationInOrder(operationsToReduce: [String]) -> [String]? {
+    
+    
+//     test pour reduire fonction calculateDivisionAndMultiplicationInOrder()
+     
+    func definingLeftOperandRightValues(_ elementsOfCalculation: [String], _ element: String) -> [String]? {
+        var values: [String] = elementsOfCalculation
+        guard let left: Float = Float(values[values.firstIndex(of: element)!-1]) else {
+            return nil
+        }
+        let operand = values[values.firstIndex(of: element)!]
+        guard let right = Float(values[values.firstIndex(of: element)!+1]) else {
+            return nil
+        }
+        let result : Float
+        switch operand {
+        case "×":
+            result = left * right
+        case "÷":
+            if right == 0 {
+                delegate?.showAlert("Division par zéro impossible.")
+                clearText()
+                return nil
+            } else {
+                result = left / right
+            }
+        default:
+            return nil
+        }
+        values.remove(at: values.firstIndex(of: element)!+1)
+        values.remove(at: values.firstIndex(of: element)!-1)
+        values.insert("\(result)", at: values.firstIndex(of: element)!)
+        values.remove(at: values.firstIndex(of: element)!)
+        return values
+    }
+    
+    func calculateDivisionAndMultiplicationInOrder(_ operationsToReduce: [String]) -> [String]? {
         var elementsOfCalculation: [String] = operationsToReduce
         for element in elementsOfCalculation {
-            if element == "×" {
-                guard let left: Float = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!-1]) else {
-                    return nil
-                }
-                let operand = elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!]
-                guard let right = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!+1]) else {
-                    return nil
-                }
-                let result: Float
-                switch operand {
-                case "×":
-                    result = left * right
-                default:
-                    return nil
-                }
-                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!+1)
-                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!-1)
-                elementsOfCalculation.insert("\(result)", at: elementsOfCalculation.firstIndex(of: element)!)
-                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!)
-            }
-            if element == "÷" {
-                guard let left: Float = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!-1]) else {
-                    return nil
-                }
-                let operand = elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!]
-                guard let right = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!+1]) else {
-                    return nil
-                }
-                let result: Float
-                switch operand {
-                case "÷":
-                    if right == 0 {
-                        delegate?.showAlert("Division par zéro impossible.")
-                        clearText()
-                        return nil
-                    } else {
-                        result = left / right
-                    }
-                default:
-                    return nil
-                }
-                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!+1)
-                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!-1)
-                elementsOfCalculation.insert("\(result)", at: elementsOfCalculation.firstIndex(of: element)!)
-                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!)
+            if element == "×" || element == "÷" {
+                elementsOfCalculation = definingLeftOperandRightValues(operationsToReduce, element)!
             }
         }
         return elementsOfCalculation
     }
+        /*
+     
+     func executeMultiplicationAndDivision(elementsOfCalculation: [String]) {
+        for element in elementsOfCalculation {
+            if element == "×" || element == "÷"{
+            definingLeftOperandRightValues(elementsOfCalculation: elementsOfCalculation)
+            }
+        }
+     }
+     
+     */
+     
+     
+    
+    /// Execute the prioritized calcul (contains division and\or multiplication).
+//    func calculateDivisionAndMultiplicationInOrder(_ operationsToReduce: [String]) -> [String]? {
+//        var elementsOfCalculation: [String] = operationsToReduce
+//        for element in elementsOfCalculation {
+//            if element == "×" {
+//                guard let left: Float = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!-1]) else {
+//                    return nil
+//                }
+//                let operand = elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!]
+//                guard let right = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!+1]) else {
+//                    return nil
+//                }
+//                let result: Float
+//                switch operand {
+//                case "×":
+//                    result = left * right
+//                default:
+//                    return nil
+//                }
+//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!+1)
+//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!-1)
+//                elementsOfCalculation.insert("\(result)", at: elementsOfCalculation.firstIndex(of: element)!)
+//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!)
+//            }
+//            if element == "÷" {
+//                guard let left: Float = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!-1]) else {
+//                    return nil
+//                }
+//                let operand = elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!]
+//                guard let right = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!+1]) else {
+//                    return nil
+//                }
+//                let result: Float
+//                switch operand {
+//                case "÷":
+//                    if right == 0 {
+//                        delegate?.showAlert("Division par zéro impossible.")
+//                        clearText()
+//                        return nil
+//                    } else {
+//                        result = left / right
+//                    }
+//                default:
+//                    return nil
+//                }
+//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!+1)
+//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!-1)
+//                elementsOfCalculation.insert("\(result)", at: elementsOfCalculation.firstIndex(of: element)!)
+//                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!)
+//            }
+//        }
+//        return elementsOfCalculation
+//    }
 
-    func calculateAdditionAndSubstraction(operationsToReduce: [String]) -> [String]? {
+    func calculateAdditionAndSubstraction(_ operationsToReduce: [String]) -> [String]? {
         var additionAndSubstraction: [String] = operationsToReduce
         guard let left = Float(additionAndSubstraction[0]) else {
             return nil
@@ -170,7 +228,7 @@ class Calculation {
                 delegate?.showAlert("Entrez une expression correcte !")
                 return
             }
-            forbidDivisionbyZero()
+//            forbidDivisionbyZero()
             if let result: String = equalExecution() {
                 displayableCalculText.append(" = \(result)")
             }
