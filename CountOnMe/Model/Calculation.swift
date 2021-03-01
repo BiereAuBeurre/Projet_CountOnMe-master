@@ -16,15 +16,16 @@ import Foundation
 final class Calculation {
     // MARK: -Model properties
     var delegate: CalculationDelegate?
-    private var displayableCalculText: String = "" {
+    var displayableCalculText: String = "" {
         didSet {
             delegate?.calculationUpdated(displayableCalculText)
         }
     }
+    var calculationResult: String = ""
+
     private var elements: [String] {
         return displayableCalculText.split(separator: " ").map { "\($0)" }
     }
-    
     // MARK: - Private methods
     private func noDivisionByZero() -> Bool {
         return elements[2] != "0"
@@ -38,7 +39,15 @@ final class Calculation {
             }
         }
     }
-    func expressionIsCorrect() -> Bool {
+    private func forbidStartingByXOrDivide() {
+        if elements.first != "×" || elements.first != "÷" {
+            delegate?.showAlert("Impossible de commencer par une mutliplication ou division. Merci de renseigner un  calcul correct.")
+            clearText()
+            return
+        }
+    }
+    
+    private func expressionIsCorrect() -> Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×"
     }
     private func expressionHaveEnoughElement() -> Bool {
@@ -47,10 +56,9 @@ final class Calculation {
     private func expressionHaveResult() -> Bool {
         return elements.contains("=")
     }
-    
-    private func reduceNegativeNumber(_ negativeValue: [String]) -> [String]? {
+    private func splitNumberStartingByOperandPlusOrMinus(_ negativeValue: [String]) -> [String]? {
         var operationsToReduce = negativeValue
-        if operationsToReduce[0].contains("-") {
+        if operationsToReduce[0].contains("-") || operationsToReduce[0].contains("+") {
             operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
             operationsToReduce.remove(at: 1)
         }
@@ -60,12 +68,7 @@ final class Calculation {
     private func equalExecution() -> String? {
         var operationsToReduce = elements
         while operationsToReduce.count > 1 {
-            /// If the 1st element is a "-"" operator then it's gonna be a negative number, so it merges the 1st and the 2nd index in a unique value at index [0].
-            operationsToReduce = reduceNegativeNumber(operationsToReduce)!
-//            if operationsToReduce[0].contains("-") {
-//                operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
-//                operationsToReduce.remove(at: 1)
-//            }
+            operationsToReduce = splitNumberStartingByOperandPlusOrMinus(operationsToReduce)!
             while operationsToReduce.contains("×") || operationsToReduce.contains("÷") {
                 guard let result = calculateDivisionAndMultiplicationInOrder(operationsToReduce) else {
                     return nil
@@ -139,13 +142,17 @@ final class Calculation {
     func clearText() {
         displayableCalculText = ""
     }
-    func addNumber(numbers: String) {
+    func addNumber(_ numbers: String) {
         if expressionHaveResult() {
             clearText()
         }
         displayableCalculText.append(numbers)
     }
     func addCalculatingSymbol(_ calculatingSymbol: String) {
+        //rajouter condition if expression haveresult pour clearText si calcul précédent terminé
+        if expressionHaveResult() {
+            clearText()
+        }
         if expressionIsCorrect() {
             displayableCalculText.append(calculatingSymbol)
         } else {
@@ -159,8 +166,10 @@ final class Calculation {
                 return
             }
             forbidDivisionbyZero()
+            forbidStartingByXOrDivide()
             if let result: String = equalExecution() {
                 displayableCalculText.append(" = \(result)")
+                calculationResult = result
             }
         } else {
             delegate?.showAlert("Entrez un calcul correct")

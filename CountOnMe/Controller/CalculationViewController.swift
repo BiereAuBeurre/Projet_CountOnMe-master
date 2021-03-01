@@ -27,7 +27,7 @@ private extension CalculationViewController {
         guard let numberText = sender.title(for: .normal) else {
             return
         }
-        calculation.addNumber(numbers: numberText)
+        calculation.addNumber(numberText)
     }
     @IBAction func didTapACButton(_ sender: UIButton) {
         calculation.clearText()
@@ -48,7 +48,7 @@ extension CalculationViewController: CalculationDelegate {
         textView.text = calcul
     }
     func showAlert(_ message: String) {
-        let alertVC = UIAlertController(title: "Zéro!", message: message, preferredStyle: .alert)
+        let alertVC = UIAlertController(title: "Erreur", message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         self.present(alertVC, animated: true, completion: nil)
     }
