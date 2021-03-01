@@ -83,40 +83,35 @@ final class Calculation {
     }
     // MARK: - Calcul methods
     
-    func definingLeftOperandRightValuesForPriorities(_ elementsOfCalculation: [String], _ element: String) -> [String]? {
-        var values = elementsOfCalculation
-        guard let left: Float = Float(values[values.firstIndex(of: element)!-1]) else {
-            return nil
-        }
-        let operand = values[values.firstIndex(of: element)!]
-        guard let right = Float(values[values.firstIndex(of: element)!+1]) else {
-            return nil
-        }
-        let result : Float
-        switch operand {
-        case "×":
-            result = left * right
-        case "÷":
-            if right == 0 {
-                delegate?.showAlert("Division par zéro impossible.")
-                clearText()
-                return nil
-            } else {
-                forbidDivisionbyZero()
-                result = left / right
-            }
-        default:
-            return nil
-        }
-        values.remove(at: values.firstIndex(of: element)!+1); values.remove(at: values.firstIndex(of: element)!-1); values.insert("\(result)", at: values.firstIndex(of: element)!); values.remove(at: values.firstIndex(of: element)!)
-        return values
-    }
-    
     func calculateDivisionAndMultiplicationInOrder(_ operationsToReduce: [String]) -> [String]? {
         var elementsOfCalculation: [String] = operationsToReduce
         for element in elementsOfCalculation {
             if element == "×" || element == "÷" {
-                elementsOfCalculation = definingLeftOperandRightValuesForPriorities(operationsToReduce, element)!
+                guard let left: Float = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!-1]) else {
+                    return nil
+                }
+                let operand = elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!]
+                guard let right = Float(elementsOfCalculation[elementsOfCalculation.firstIndex(of: element)!+1]) else {
+                    return nil
+                }
+                let result : Float
+                switch operand {
+                case "×":
+                    result = left * right
+                case "÷":
+                    if right == 0 {
+                        delegate?.showAlert("Division par zéro impossible.")
+                        clearText()
+                        return nil
+                    } else {
+                        forbidDivisionbyZero()
+                        result = left / right
+                    }
+                default:
+                    return nil
+                }
+                elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!+1); elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!-1); elementsOfCalculation.insert("\(result)", at: elementsOfCalculation.firstIndex(of: element)!); elementsOfCalculation.remove(at: elementsOfCalculation.firstIndex(of: element)!)
+                return elementsOfCalculation
             }
         }
         return elementsOfCalculation

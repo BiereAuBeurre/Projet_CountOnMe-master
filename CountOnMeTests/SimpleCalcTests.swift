@@ -19,38 +19,38 @@ class SimpleCalcTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         calculation = nil
     }
-    func testGivenFirstNumberIs3AndSecondNumberIs5_WhenAdditionating_ThenResultIs7() {
-        // Given & When
-        let result = calculation?.calculateAdditionAndSubstraction(["3", "+", "5"])
-        // Then
-        XCTAssertEqual(result, ["8.0"])
-    }
-    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenSubstracting_ThenResultIs5() {
-        // Given & When
-        let result = calculation?.calculateAdditionAndSubstraction(["10", "-", "5"])
-        // Then
-        XCTAssertEqual(result, ["5.0"])
-    }
-    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenDividing_ThenResultIs2() {
-        // Given & When
-        let result = calculation?.calculateDivisionAndMultiplicationInOrder(["10", "÷", "5"])
-        // Then
-        XCTAssertEqual(result, ["2.0"])
-    }
+//    func testGivenFirstNumberIs3AndSecondNumberIs5_WhenAdditionating_ThenResultIs7() {
+//        // Given & When
+//        let result = calculation?.calculateAdditionAndSubstraction(["3", "+", "5"])
+//        // Then
+//        XCTAssertEqual(result, ["8.0"])
+//    }
+//    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenSubstracting_ThenResultIs5() {
+//        // Given & When
+//        let result = calculation?.calculateAdditionAndSubstraction(["10", "-", "5"])
+//        // Then
+//        XCTAssertEqual(result, ["5.0"])
+//    }
+//    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenDividing_ThenResultIs2() {
+//        // Given & When
+//        let result = calculation?.calculateDivisionAndMultiplicationInOrder(["10", "÷", "5"])
+//        // Then
+//        XCTAssertEqual(result, ["2.0"])
+//    }
     
-    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenMultiplicating_ThenResultIs50() {
-        // Given & When
-        let result = calculation?.calculateDivisionAndMultiplicationInOrder(["10", "×", "5"])
-        // Then
-        XCTAssertEqual(result, ["50.0"])
-    }
-    func testGivenFirstNumberIs10AndSecondNumberIs15_WhenAdditionating_AndDividingBy3_ThenResultIs25() {
-        // Given & When
-        var result = calculation?.calculateDivisionAndMultiplicationInOrder(["10", "+", "15", "÷", "3"])
-        result = calculation?.calculateAdditionAndSubstraction(result!)
-        // Then
-        XCTAssertEqual(result, ["15.0"])
-    }
+//    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenMultiplicating_ThenResultIs50() {
+//        // Given & When
+//        let result = calculation?.calculateDivisionAndMultiplicationInOrder(["10", "×", "5"])
+//        // Then
+//        XCTAssertEqual(result, ["50.0"])
+//    }
+//    func testGivenFirstNumberIs10AndSecondNumberIs15_WhenAdditionating_AndDividingBy3_ThenResultIs25() {
+//        // Given & When
+//        var result = calculation?.calculateDivisionAndMultiplicationInOrder(["10", "+", "15", "÷", "3"])
+//        result = calculation?.calculateAdditionAndSubstraction(result!)
+//        // Then
+//        XCTAssertEqual(result, ["15.0"])
+//    }
     func testGivenFirstNumberIs4_WhenAdditionnatingByAddingTwiceTheSymbol_ThenFalsecanAddOperator() {
         // Given
         calculation.addNumber(numbers: "4")
@@ -60,10 +60,10 @@ class SimpleCalcTests: XCTestCase {
 //        XCTAssertFalse(calculation.expressionHaveEnoughElement())
     }
     
-    func testcalculatingAndDiplayingResult() {
-        var result = calculation?.calculateDivisionAndMultiplicationInOrder(["10", "+", "15", "÷", "3"])
-        result = calculation?.calculateAdditionAndSubstraction(result!)
-        calculation.calculatingAndDiplayingResult()
-        XCTAssertEqual(result, ["15.0"])
-    }
+//    func testcalculatingAndDiplayingResult() {
+//        var result = calculation?.calculateDivisionAndMultiplicationInOrder(["10", "+", "15", "÷", "3"])
+//        result = calculation?.calculateAdditionAndSubstraction(result!)
+//        calculation.calculatingAndDiplayingResult()
+//        XCTAssertEqual(result, ["15.0"])
+//    }
 }
