@@ -16,7 +16,8 @@ final class CalculationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        calculation.delegate = self
+        NotificationCenter.default.addObserver(self, selector: #selector(calculationUpdated), name: Notification.Name("update"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(showDivisionAlert), name: Notification.Name("alert"), object: nil)
         calculation.clearText()
     }
 }
@@ -29,27 +30,32 @@ private extension CalculationViewController {
         }
         calculation.addNumber(numberText)
     }
+    
     @IBAction func didTapACButton(_ sender: UIButton) {
         calculation.clearText()
     }
+    
     @IBAction func didTapEqualButton(_ sender: UIButton) {
-        calculation.calculatingAndDiplayingResult()
+        calculation.calculatingAndDisplayingResult()
     }
+    
     @IBAction func didTapOperatorButton(_ sender: UIButton) {
         guard let operatorSymbol = sender.title(for: .normal) else {
             return
         }
         calculation.addCalculatingSymbol(" \(operatorSymbol) ")
     }
-}
-
-extension CalculationViewController: CalculationDelegate {
-    func calculationUpdated(_ calcul: String) {
-        textView.text = calcul
+    
+    @objc func calculationUpdated() {
+        textView.text = calculation.displayableCalculText
     }
-    func showAlert(_ message: String) {
-        let alertVC = UIAlertController(title: "Erreur", message: message, preferredStyle: .alert)
+    
+    @objc func showDivisionAlert() {
+        let alertVC = UIAlertController(title: "Erreur", message: "Division par zéro impossible", preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         self.present(alertVC, animated: true, completion: nil)
     }
+
 }
+
+
