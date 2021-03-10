@@ -35,26 +35,26 @@ final class Calculation {
         NotificationCenter.default.post(notification)
     }
     
-    private func noDivisionByZero() -> Bool {
-        return elements[2] != "0"
-    }
-    private func forbidDivisionByZero() {
-        if elements[1] == "÷" {
-            guard noDivisionByZero() else {
-                notifyDivisionAlert()
-                displayableCalculText = "= div by zero"
-                return
-            }
-        }
-    }
+//    private func noDivisionByZero() -> Bool {
+//        return elements[2] != "0"
+//    }
+//    private func forbidDivisionByZero() {
+//        if elements[1] == "÷" {
+//            guard noDivisionByZero() else {
+//                notifyDivisionAlert()
+//                displayableCalculText = "= div by zero"
+//                return
+//            }
+//        }
+//    }
     
     private func canAddOperator() -> Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×"
-    }
-    
-    private func expressionIsCorrect() -> Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.first != "÷" && elements.first != "×"
     }
+    
+//    private func expressionIsCorrect() -> Bool {
+//        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.first != "÷" && elements.first != "×"
+//    }
     
     private func expressionHasEnoughElement() -> Bool {
         return elements.count >= 3
@@ -121,7 +121,7 @@ final class Calculation {
 //                displayableCalculText = "missing element"
 //                return
 //            }
-            forbidDivisionByZero()
+//            forbidDivisionByZero()
             /// Attributing the obtain result in equalExecution() in the let result value we'll show on screen once all calculated.
             if let result: String = equalExecution() {
                 displayableCalculText.append(" = \(result)")

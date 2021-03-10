@@ -13,8 +13,6 @@ final class SimpleCalcTests: XCTestCase {
     
     private var calculation: Calculation!
     
-    //    var calculationDelegate: MockCalculationVC?
-    
     override func setUp() {
         // This method is called before the invocation of each test method in the class.
         calculation = Calculation()
@@ -153,7 +151,7 @@ final class SimpleCalcTests: XCTestCase {
         // When
         calculation.calculatingAndDisplayingResult()
         // Then
-        XCTAssertEqual(calculation.calculationResult, "")
+        XCTAssertEqual(calculation.displayableCalculText, "= div by zero")
     }
     
     func testGivenOnlyOneValueIs2_WhenAdditionnatingTwice_ThenExpressionHasEnoughElementFalseAndErrorMessageISShown() {
