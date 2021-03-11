@@ -36,7 +36,7 @@ private extension CalculationViewController {
     }
     
     @IBAction func didTapEqualButton(_ sender: UIButton) {
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
     }
     
     @IBAction func didTapOperatorButton(_ sender: UIButton) {

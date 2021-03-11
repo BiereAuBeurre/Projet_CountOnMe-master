@@ -29,7 +29,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol(" + ")
         calculation.addNumber("5")
         // When
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         XCTAssertEqual(calculation.calculationResult, "8.0")
     }
     
@@ -39,7 +39,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol(" - ")
         calculation.addNumber("5")
         // When
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         // Then
         XCTAssertEqual(calculation.calculationResult, "5.0")
     }
@@ -50,7 +50,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol(" ÷ ")
         calculation.addNumber("5")
         // When
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         // Then
         XCTAssertEqual(calculation.calculationResult, "2.0")
     }
@@ -61,7 +61,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol(" × ")
         calculation.addNumber("5")
         // When
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         // Then
         XCTAssertEqual(calculation.calculationResult, "50.0")
     }
@@ -74,7 +74,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol(" ÷ ")
         calculation.addNumber("3")
         // When
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         // Then
         XCTAssertEqual(calculation.calculationResult, "15.0")
     }
@@ -86,7 +86,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol(" + ")
         calculation.addNumber("2")
         // When
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         // Then
         XCTAssertEqual(calculation.calculationResult, "0.0")
     }
@@ -98,7 +98,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol(" + ")
         calculation.addNumber("4")
         // When
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         // Then
         XCTAssertEqual(calculation.calculationResult, "6.0")
     }
@@ -109,7 +109,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol(" ÷ ")
         calculation.addNumber("0")
         // When
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         // Then
         XCTAssertEqual(calculation.displayableCalculText, "= div by zero")
     }
@@ -130,7 +130,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol(" × ")
         calculation.addNumber("2")
         // When
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         // Then
         XCTAssertEqual(calculation.calculationResult, "2.0")
     }
@@ -149,7 +149,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol(" × ")
         calculation.addNumber("2")
         // When
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         // Then
         XCTAssertEqual(calculation.displayableCalculText, "= div by zero")
     }
@@ -193,7 +193,7 @@ final class SimpleCalcTests: XCTestCase {
     func testGivenTwoValuesOnOnly_WhenEqualTapped_ThenMissingElementPrintOnScreen() {
         calculation.addNumber("2")
         calculation.addCalculatingSymbol(" ÷ ")
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         XCTAssertEqual(calculation.displayableCalculText, "missing element")
     }
     
@@ -201,7 +201,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addCalculatingSymbol("+")
         calculation.addNumber("2")
         calculation.addCalculatingSymbol(" ÷ ")
-        calculation.calculatingAndDisplayingResult()
+        calculation.displayResult()
         XCTAssertEqual(calculation.displayableCalculText, "missing element")
 
     }
