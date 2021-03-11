@@ -29,6 +29,18 @@ final class Calculation {
         }
         return true
     }
+    
+    private var canAddOperator: Bool {
+        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.first != "÷" && elements.first != "×"
+    }
+    
+    private var expressionHasEnoughElement: Bool {
+        return elements.count >= 3
+    }
+    
+    private var expressionHaveResult: Bool {
+        return elements.contains("=")
+    }
     // MARK: - Private methods
     private func notifyUpdate() {
         let notificationName = Notification.Name("update")
@@ -42,19 +54,8 @@ final class Calculation {
         NotificationCenter.default.post(notification)
     }
     
-    private func canAddOperator() -> Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.first != "÷" && elements.first != "×"
-    }
-    
-    private func expressionHasEnoughElement() -> Bool {
-        return elements.count >= 3
-    }
-    
-    private func expressionHaveResult() -> Bool {
-        return elements.contains("=")
-    }
-    
     private func splitNumberStartingByOperandPlusOrMinus(_ valueToSplit: [String]) -> [String] {
+        /// If calcul starts with "+" or "-" we'll split it as one unique value containing operand and the following number
         var operationsToReduce = valueToSplit
         if operationsToReduce[0].contains("-") || operationsToReduce[0].contains("+") {
             operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
@@ -63,7 +64,7 @@ final class Calculation {
         return operationsToReduce
     }
     
-    private func resolving() -> String? {
+    private func resolving() -> String {
         /// Execute in order the multiplication and divison to handle first, then execute the addition and substraction of the result of the first operation
         var operationsToReduce = elements
         while operationsToReduce.count > 1 {
@@ -72,14 +73,14 @@ final class Calculation {
             if let index = operationsToReduce.firstIndex(where: { $0.contains("×") || $0.contains("÷")}) {
                 operandIndex = index
             }
-            guard let left: Float = Float(operationsToReduce[operandIndex-1]), let right = Float(operationsToReduce[operandIndex+1]) else { return nil }
+            guard let left: Float = Float(operationsToReduce[operandIndex-1]), let right = Float(operationsToReduce[operandIndex+1]) else { return "= out of range" }
             let operand = operationsToReduce[operandIndex]
             switch operand {
             case "+": calculationResult = "\(left + right)"
             case "-": calculationResult = "\(left - right)"
             case "×": calculationResult = "\(left * right)"
             case "÷": calculationResult = "\(left / right)"
-            default: return nil
+            default: return "unknown operand"
             }
             operationsToReduce.remove(at: operandIndex+1); operationsToReduce.remove(at: operandIndex-1)
             operationsToReduce.insert("\(calculationResult)", at: operandIndex)
@@ -94,7 +95,7 @@ final class Calculation {
     }
     
     func addNumber(_ numbers: String) {
-        if expressionHaveResult() {
+        if expressionHaveResult {
             clearText()
         }
         displayableCalculText.append(numbers)
@@ -102,22 +103,18 @@ final class Calculation {
     
     func addCalculatingSymbol(_ calculatingSymbol: String) {
         /// If a previous calcul and its result is displayed before typing this symbol, we'll clear text.
-        if expressionHaveResult() {
+        if expressionHaveResult {
             clearText()
         }
         /// Checking the last element typed isn't already an operator.
-        if canAddOperator() {
-            displayableCalculText.append(calculatingSymbol)
-        } else {
-            displayableCalculText = "extra operand"
-        }
+        guard canAddOperator else { return displayableCalculText = "extra operand"}
+        displayableCalculText.append(calculatingSymbol)
     }
     
     func displayResult() {
         guard noDivisionByZero else { notifyDivisionAlert(); return }
-        guard expressionHasEnoughElement() else {return displayableCalculText = "missing element"}
-        guard let result = resolving() else { return }
-        displayableCalculText.append(" = \(result)")
+        guard expressionHasEnoughElement else {return displayableCalculText = "= missing element"}
+        displayableCalculText.append(" = \(resolving())")
     }
     
 }
