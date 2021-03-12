@@ -107,14 +107,26 @@ final class Calculation {
             clearText()
         }
         /// Checking the last element typed isn't already an operator.
-        guard canAddOperator else { return displayableCalculText = "extra operand"}
+        guard canAddOperator else { return displayableCalculText = "extra operand" }
         displayableCalculText.append(calculatingSymbol)
     }
     
     func displayResult() {
         guard noDivisionByZero else { notifyDivisionAlert(); return }
-        guard expressionHasEnoughElement else {return displayableCalculText = "= missing element"}
-        displayableCalculText.append(" = \(resolving())")
+        guard expressionHasEnoughElement else { return displayableCalculText = "= missing element" }
+        if let finalResult = (Float("\(resolving())")?.removeZerosFromEnd()) {
+            displayableCalculText.append(" = \(finalResult)")
+        }
     }
     
+}
+
+extension Float {
+    func removeZerosFromEnd() -> String {
+        let formatter = NumberFormatter()
+        let number = NSNumber(value: self)
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2 //maximum digits in Double after dot (maximum precision)
+        return String(formatter.string(from: number) ?? "")
+    }
 }
