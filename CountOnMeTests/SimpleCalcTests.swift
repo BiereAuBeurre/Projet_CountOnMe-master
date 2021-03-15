@@ -14,14 +14,16 @@ final class SimpleCalcTests: XCTestCase {
     private var calculation: Calculation!
     
     override func setUp() {
-        // This method is called before the invocation of each test method in the class.
+        /// This method is called before the invocation of each test method in the class.
         calculation = Calculation()
     }
     
     override func tearDown() {
-        // This method is called after the invocation of each test method in the class.
+        /// This method is called after the invocation of each test method in the class.
         calculation = nil
     }
+    
+    // rajouter calcul avec decimal
     
     func testGivenFirstNumberIs3AndSecondNumberIs5_WhenAdditioning_ThenResultIs8() {
         // Given
@@ -30,18 +32,7 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addNumber("5")
         // When
         calculation.displayResult()
-        XCTAssertEqual(calculation.calculationResult, "8.0")
-    }
-    
-    func testGivenFirstNumberIs10AndSecondNumberIs5_WhenSubstracting_ThenResultIs5() {
-        // Given
-        calculation.addNumber("10")
-        calculation.addCalculatingSymbol(" - ")
-        calculation.addNumber("5")
-        // When
-        calculation.displayResult()
-        // Then
-        XCTAssertEqual(calculation.calculationResult, "5.0")
+        XCTAssertEqual(calculation.displayableCalculText, "3 + 5 = 8")
     }
     
     func testGivenFirstNumberIs10AndSecondNumberIs5_WhenDividing_ThenResultIs2() {
@@ -52,7 +43,7 @@ final class SimpleCalcTests: XCTestCase {
         // When
         calculation.displayResult()
         // Then
-        XCTAssertEqual(calculation.calculationResult, "2.0")
+        XCTAssertEqual(calculation.displayableCalculText, "10 ÷ 5 = 2")
     }
     
     func testGivenFirstNumberIs10AndSecondNumberIs5_WhenMultiplicating_ThenResultIs50() {
@@ -63,7 +54,7 @@ final class SimpleCalcTests: XCTestCase {
         // When
         calculation.displayResult()
         // Then
-        XCTAssertEqual(calculation.calculationResult, "50.0")
+        XCTAssertEqual(calculation.displayableCalculText, "10 × 5 = 50")
     }
     
     func testGivenFirstNumberIs10AndSecondNumberIs15_WhenAdditionating_AndDividingBy3_ThenResultIs15() {
@@ -76,7 +67,7 @@ final class SimpleCalcTests: XCTestCase {
         // When
         calculation.displayResult()
         // Then
-        XCTAssertEqual(calculation.calculationResult, "15.0")
+        XCTAssertEqual(calculation.displayableCalculText, "10 + 15 ÷ 3 = 15")
     }
     
     func testGivenFirstNumberIsMinus2SecondNumberIs2_WhenAdditionnating_ThenResutltIsZero() {
@@ -88,19 +79,7 @@ final class SimpleCalcTests: XCTestCase {
         // When
         calculation.displayResult()
         // Then
-        XCTAssertEqual(calculation.calculationResult, "0.0")
-    }
-    
-    func testGivenFirstNumberIsPlus2SecondNumberIs4_WhenAdditionnating_ThenResultIs6() {
-        // Given
-        calculation.addCalculatingSymbol(" + ")
-        calculation.addNumber("2")
-        calculation.addCalculatingSymbol(" + ")
-        calculation.addNumber("4")
-        // When
-        calculation.displayResult()
-        // Then
-        XCTAssertEqual(calculation.calculationResult, "6.0")
+        XCTAssertEqual(calculation.displayableCalculText, " - 2 + 2 = 0")
     }
     
     func testGivenFirstNumberIs2SecondNumberIs0_WhenDividing_ThenNoResult() {
@@ -132,7 +111,7 @@ final class SimpleCalcTests: XCTestCase {
         // When
         calculation.displayResult()
         // Then
-        XCTAssertEqual(calculation.calculationResult, "2.0")
+        XCTAssertEqual(calculation.displayableCalculText, "10 + 15 × 2 + 20 ÷ 10 - 20 × 2 = 2")
     }
     
     func testLongCalculOfSevenValuesWithADivisionby0_WhenCalculating_ThenResultIsEmpty() {
@@ -158,25 +137,9 @@ final class SimpleCalcTests: XCTestCase {
         calculation.addNumber("2")
         calculation.addCalculatingSymbol(" + ")
         calculation.addCalculatingSymbol(" + ")
-
-        XCTAssertEqual(calculation.displayableCalculText, "extra operand")
+        XCTAssertEqual(calculation.displayableCalculText, "= extra operand")
     }
     
-    func testGivenOnlyOneValueIs2_WhenSubstractingTwice_ThenExpressionHasEnoughElementFalseAndErrorMessageISShown() {
-        calculation.addNumber("2")
-        calculation.addCalculatingSymbol(" - ")
-        calculation.addCalculatingSymbol(" - ")
-
-        XCTAssertEqual(calculation.displayableCalculText, "extra operand")
-    }
-    
-    func testGivenOnlyOneValueIs2_WhenDividingTwice_ThenExpressionHasEnoughElementFalseAndErrorMessageISShown() {
-        calculation.addNumber("2")
-        calculation.addCalculatingSymbol(" ÷ ")
-        calculation.addCalculatingSymbol(" ÷ ")
-
-        XCTAssertEqual(calculation.displayableCalculText, "extra operand")
-    }
     
     func testGivenExpressionHasResultTrue_WhenTypingANewNumber_ThenPreviousCalculIsCleared() {
         calculation.displayableCalculText = "2 + 4 = 6"
@@ -190,20 +153,19 @@ final class SimpleCalcTests: XCTestCase {
         XCTAssertEqual(calculation.displayableCalculText, "+")
     }
     
+    func testGivenIs5and2_WhenDividing_ThenResultShowDecimalnumber() {
+        calculation.addNumber("5")
+        calculation.addCalculatingSymbol(" ÷ ")
+        calculation.addNumber("2")
+        calculation.displayResult()
+        XCTAssertEqual(calculation.displayableCalculText, "5 ÷ 2 = 2.5")
+    }
+    
     func testGivenTwoValuesOnOnly_WhenEqualTapped_ThenMissingElementPrintOnScreen() {
         calculation.addNumber("2")
         calculation.addCalculatingSymbol(" ÷ ")
         calculation.displayResult()
-        XCTAssertEqual(calculation.displayableCalculText, "missing element")
-    }
-    
-    func testFullCalculatingAndDisplayingResult() {
-        calculation.addCalculatingSymbol("+")
-        calculation.addNumber("2")
-        calculation.addCalculatingSymbol(" ÷ ")
-        calculation.displayResult()
-        XCTAssertEqual(calculation.displayableCalculText, "missing element")
-
+        XCTAssertEqual(calculation.displayableCalculText, "= missing element")
     }
     
 }

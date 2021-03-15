@@ -41,6 +41,7 @@ final class Calculation {
     private var expressionHaveResult: Bool {
         return elements.contains("=")
     }
+    
     // MARK: - Private methods
     private func notifyUpdate() {
         let notificationName = Notification.Name("update")
@@ -55,7 +56,7 @@ final class Calculation {
     }
     
     private func splitNumberStartingByOperandPlusOrMinus(_ valueToSplit: [String]) -> [String] {
-        /// If calcul starts with "+" or "-" we'll split it as one unique value containing operand and the following number
+        /// If calcul starts with "+" or "-" we'll split it as one unique value containing operand and the following number.
         var operationsToReduce = valueToSplit
         if operationsToReduce[0].contains("-") || operationsToReduce[0].contains("+") {
             operationsToReduce[0] = "\(operationsToReduce[0])\(operationsToReduce[1])"
@@ -65,7 +66,7 @@ final class Calculation {
     }
     
     private func resolving() -> String {
-        /// Execute in order the multiplication and divison to handle first, then execute the addition and substraction of the result of the first operation
+        /// Handle the multiplication and divison first, then execute the addition and substraction of the result of the first operation.
         var operationsToReduce = elements
         while operationsToReduce.count > 1 {
             operationsToReduce = splitNumberStartingByOperandPlusOrMinus(operationsToReduce)
@@ -73,20 +74,24 @@ final class Calculation {
             if let index = operationsToReduce.firstIndex(where: { $0.contains("×") || $0.contains("÷")}) {
                 operandIndex = index
             }
-            guard let left: Float = Float(operationsToReduce[operandIndex-1]), let right = Float(operationsToReduce[operandIndex+1]) else { return "= out of range" }
+            guard let left: Float = Float(operationsToReduce[operandIndex-1]),
+                let right = Float(operationsToReduce[operandIndex+1]) else { return " out of range" }
             let operand = operationsToReduce[operandIndex]
+            var result: Float
             switch operand {
-            case "+": calculationResult = "\(left + right)"
-            case "-": calculationResult = "\(left - right)"
-            case "×": calculationResult = "\(left * right)"
-            case "÷": calculationResult = "\(left / right)"
+            case "+": result = left + right
+            case "-": result = left - right
+            case "×": result = left * right
+            case "÷": result = left / right
             default: return "unknown operand"
             }
-            operationsToReduce.remove(at: operandIndex+1); operationsToReduce.remove(at: operandIndex-1)
-            operationsToReduce.insert("\(calculationResult)", at: operandIndex)
+            operationsToReduce.remove(at: operandIndex+1)
+            operationsToReduce.remove(at: operandIndex-1)
+            operationsToReduce.insert("\(result.removeZerosFromEnd())", at: operandIndex)
             operationsToReduce.remove(at: operandIndex-1)
         }
-        return calculationResult
+        guard let finalResult = operationsToReduce.first else { return " missing result" }
+        return finalResult
     }
     
     // MARK: - Public methods
@@ -102,31 +107,30 @@ final class Calculation {
     }
     
     func addCalculatingSymbol(_ calculatingSymbol: String) {
-        /// If a previous calcul and its result is displayed before typing this symbol, we'll clear text.
+        /// If a previous calcul and its result are displayed before typing a new symbol, we'll clear text.
         if expressionHaveResult {
             clearText()
         }
         /// Checking the last element typed isn't already an operator.
-        guard canAddOperator else { return displayableCalculText = "extra operand" }
+        guard canAddOperator else { return displayableCalculText = "= extra operand" }
         displayableCalculText.append(calculatingSymbol)
     }
     
     func displayResult() {
         guard noDivisionByZero else { notifyDivisionAlert(); return }
         guard expressionHasEnoughElement else { return displayableCalculText = "= missing element" }
-        if let finalResult = (Float("\(resolving())")?.removeZerosFromEnd()) {
-            displayableCalculText.append(" = \(finalResult)")
-        }
+        displayableCalculText.append(" = \(resolving())")
     }
     
 }
 
-extension Float {
+private extension Float {
+    /// This methods is called above in displayResult(), delete decimal for integer number.
     func removeZerosFromEnd() -> String {
         let formatter = NumberFormatter()
         let number = NSNumber(value: self)
         formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 2 //maximum digits in Double after dot (maximum precision)
-        return String(formatter.string(from: number) ?? "")
+        formatter.maximumFractionDigits = 2
+        return String(formatter.string(from: number) ?? "\(self)") ///Rajouter \(self) dans les guillemets?
     }
 }
