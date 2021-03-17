@@ -114,7 +114,7 @@ final class SimpleCalcTests: XCTestCase {
         XCTAssertEqual(calculation.displayableCalculText, "10 + 15 × 2 + 20 ÷ 10 - 20 × 2 = 2")
     }
     
-    func testLongCalculOfSevenValuesWithADivisionby0_WhenCalculating_ThenResultIsEmpty() {
+    func testLongCalculOfSevenValuesWithADivisionby0_WhenCalculating_ThenErrorMessageIsShown() {
         // Given
         calculation.addNumber("2")
         calculation.addCalculatingSymbol(" ÷ ")
@@ -133,7 +133,7 @@ final class SimpleCalcTests: XCTestCase {
         XCTAssertEqual(calculation.displayableCalculText, "= div by zero")
     }
     
-    func testGivenOnlyOneValueIs2_WhenAdditionnatingTwice_ThenExpressionHasEnoughElementFalseAndErrorMessageISShown() {
+    func testGivenOnlyOneValueIs2_WhenAdditionnatingTwice_ThenExpressionHasEnoughElementFalseAndErrorMessageIsShown() {
         calculation.addNumber("2")
         calculation.addCalculatingSymbol(" + ")
         calculation.addCalculatingSymbol(" + ")
@@ -153,7 +153,7 @@ final class SimpleCalcTests: XCTestCase {
         XCTAssertEqual(calculation.displayableCalculText, "+")
     }
     
-    func testGivenIs5and2_WhenDividing_ThenResultShowDecimalnumber() {
+    func testGivenIs5and2_WhenDividing_ThenResultShowDecimalNumber() {
         calculation.addNumber("5")
         calculation.addCalculatingSymbol(" ÷ ")
         calculation.addNumber("2")

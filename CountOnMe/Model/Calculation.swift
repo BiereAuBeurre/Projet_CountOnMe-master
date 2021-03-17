@@ -15,8 +15,7 @@ final class Calculation {
             notifyUpdate()
         }
     }
-    
-    var calculationResult: String = ""
+//    var calculationResult: String = ""
     
     private var elements: [String] {
         return displayableCalculText.split(separator: " ").map { "\($0)" }
@@ -124,13 +123,4 @@ final class Calculation {
     
 }
 
-private extension Float {
-    /// This methods is called above in displayResult(), delete decimal for integer number.
-    func removeZerosFromEnd() -> String {
-        let formatter = NumberFormatter()
-        let number = NSNumber(value: self)
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 2
-        return String(formatter.string(from: number) ?? "\(self)") ///Rajouter \(self) dans les guillemets?
-    }
-}
+
