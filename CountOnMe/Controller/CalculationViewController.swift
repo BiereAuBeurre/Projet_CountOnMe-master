@@ -12,10 +12,9 @@ final class CalculationViewController: UIViewController {
     @IBOutlet private weak var textView: UITextView!
     private let calculation = Calculation()
     
-    // View Life cycles
+    /// View Life cycles.
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(calculationUpdated), name: Notification.Name("update"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showDivisionAlert), name: Notification.Name("alert"), object: nil)
         calculation.clearText()
@@ -23,7 +22,7 @@ final class CalculationViewController: UIViewController {
 }
 
 private extension CalculationViewController {
-    // View actions
+    /// View actions
     @IBAction func didTapNumberButton(_ sender: UIButton) {
         guard let numberText = sender.title(for: .normal) else {
             return

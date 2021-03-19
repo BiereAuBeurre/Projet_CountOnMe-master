@@ -4,7 +4,6 @@
 //
 //  Created by Vincent Saluzzo on 29/03/2019.
 //  Copyright © 2019 Vincent Saluzzo. All rights reserved.
-//
 
 import XCTest
 @testable import CountOnMe
@@ -22,9 +21,7 @@ final class SimpleCalcTests: XCTestCase {
         /// This method is called after the invocation of each test method in the class.
         calculation = nil
     }
-    
-    // rajouter calcul avec decimal
-    
+        
     func testGivenFirstNumberIs3AndSecondNumberIs5_WhenAdditioning_ThenResultIs8() {
         // Given
         calculation.addNumber("3")
@@ -93,7 +90,7 @@ final class SimpleCalcTests: XCTestCase {
         XCTAssertEqual(calculation.displayableCalculText, "= div by zero")
     }
     
-    func testGivenLongCalculOfSevenValues_WheUsingDifferentOperandInDifferentOrder_ThenCalculIsPrioritizeAndResultIs2() {
+    func testGivenLongCalculOfSevenValues_WhenUsingDifferentOperandInDifferentOrder_ThenCalculIsPrioritizedAndResultIs2() {
         // Given
         calculation.addNumber("10")
         calculation.addCalculatingSymbol(" + ")
@@ -140,14 +137,13 @@ final class SimpleCalcTests: XCTestCase {
         XCTAssertEqual(calculation.displayableCalculText, "= extra operand")
     }
     
-    
     func testGivenExpressionHasResultTrue_WhenTypingANewNumber_ThenPreviousCalculIsCleared() {
         calculation.displayableCalculText = "2 + 4 = 6"
         calculation.addNumber("2")
         XCTAssertEqual(calculation.displayableCalculText, "2")
     }
     
-    func testGivenExpressionHasResultTrue_WhenTypingANeOperand_ThenPreviousCalculIsCleared() {
+    func testGivenExpressionHasResultTrue_WhenTypingANewOperand_ThenPreviousCalculIsCleared() {
         calculation.displayableCalculText = "2 + 4 = 6"
         calculation.addCalculatingSymbol("+")
         XCTAssertEqual(calculation.displayableCalculText, "+")

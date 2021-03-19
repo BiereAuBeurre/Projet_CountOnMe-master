@@ -15,7 +15,6 @@ final class Calculation {
             notifyUpdate()
         }
     }
-//    var calculationResult: String = ""
     
     private var elements: [String] {
         return displayableCalculText.split(separator: " ").map { "\($0)" }
@@ -30,6 +29,7 @@ final class Calculation {
     }
     
     private var canAddOperator: Bool {
+        /// Check that last or first elements of calculation are correct in order to execute it.
         return elements.last != "+" && elements.last != "-" && elements.last != "÷" && elements.last != "×" && elements.first != "÷" && elements.first != "×"
     }
     
@@ -65,7 +65,7 @@ final class Calculation {
     }
     
     private func resolving() -> String {
-        /// Handle the multiplication and divison first, then execute the addition and substraction of the result of the first operation.
+        /// Handle the multiplication and divison first.
         var operationsToReduce = elements
         while operationsToReduce.count > 1 {
             operationsToReduce = splitNumberStartingByOperandPlusOrMinus(operationsToReduce)
@@ -106,7 +106,7 @@ final class Calculation {
     }
     
     func addCalculatingSymbol(_ calculatingSymbol: String) {
-        /// If a previous calcul and its result are displayed before typing a new symbol, we'll clear text.
+        /// If a previous calcul and its result are displayed before typing this new symbol, we'll clear text.
         if expressionHaveResult {
             clearText()
         }

@@ -9,7 +9,7 @@
 import Foundation
 
  extension Float {
-    /// This methods is called above in displayResult(), delete decimal for integer number.
+    /// This methods is called in displayResult(), delete decimal for integer number.
     func removeZerosFromEnd() -> String {
         let formatter = NumberFormatter()
         let number = NSNumber(value: self)
