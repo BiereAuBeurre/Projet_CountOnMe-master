@@ -74,7 +74,7 @@ final class Calculation {
                 operandIndex = index
             }
             guard let left: Float = Float(operationsToReduce[operandIndex-1]),
-                let right = Float(operationsToReduce[operandIndex+1]) else { return " out of range" }
+                  let right = Float(operationsToReduce[operandIndex+1]) else { return " out of range" }
             let operand = operationsToReduce[operandIndex]
             var result: Float
             switch operand {

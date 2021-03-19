@@ -54,7 +54,7 @@ private extension CalculationViewController {
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         self.present(alertVC, animated: true, completion: nil)
     }
-
+    
 }
 
 

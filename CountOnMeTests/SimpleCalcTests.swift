@@ -21,7 +21,7 @@ final class SimpleCalcTests: XCTestCase {
         /// This method is called after the invocation of each test method in the class.
         calculation = nil
     }
-        
+    
     func testGivenFirstNumberIs3AndSecondNumberIs5_WhenAdditioning_ThenResultIs8() {
         // Given
         calculation.addNumber("3")

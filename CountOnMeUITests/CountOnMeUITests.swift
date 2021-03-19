@@ -57,4 +57,13 @@ class CountOnMeUITests: XCTestCase {
         XCTAssertEqual(textView.value as? String, "1 + 3 ÷ 5 × 2 - 1 = 1.2")
     }
     
+    func testUIAlert() throws {
+        app.buttons["3"].tap()
+        app.buttons["÷"].tap()
+        app.buttons["0"].tap()
+        app.buttons["="].tap()
+        XCTAssertEqual(app.alerts.element.label, "Erreur")
+        XCTAssert(app.alerts.element.staticTexts["Division par zéro impossible"].exists)
+    }
+    
 }
