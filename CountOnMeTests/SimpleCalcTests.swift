@@ -144,9 +144,14 @@ final class SimpleCalcTests: XCTestCase {
     }
     
     func testGivenExpressionHasResultTrue_WhenTypingANewOperand_ThenPreviousCalculIsCleared() {
-        calculation.displayableCalculText = "2 + 4 = 6"
+        // Décomposer en 3 lignes
+        calculation.addNumber("2")
+        calculation.addCalculatingSymbol(" + ")
+        calculation.addNumber("4")
+        calculation.displayResult()
         calculation.addCalculatingSymbol("+")
-        XCTAssertEqual(calculation.displayableCalculText, "+")
+        // Corrigerle resultat à 6 +
+        XCTAssertEqual(calculation.displayableCalculText, "6+")
     }
     
     func testGivenIs5and2_WhenDividing_ThenResultShowDecimalNumber() {

@@ -16,6 +16,12 @@ final class Calculation {
         }
     }
     
+    private var doContainZero: Bool {
+        return displayableCalculText == "0"
+    }
+    
+    private var calculationResult: String = "0"
+    
     private var elements: [String] {
         return displayableCalculText.split(separator: " ").map { "\($0)" }
     }
@@ -90,6 +96,7 @@ final class Calculation {
             operationsToReduce.remove(at: operandIndex-1)
         }
         guard let finalResult = operationsToReduce.first else { return " missing result" }
+        calculationResult = finalResult
         return finalResult
     }
     
@@ -105,10 +112,21 @@ final class Calculation {
         displayableCalculText.append(numbers)
     }
     
+    func reset() {
+        if doContainZero {
+            clearText()
+        }
+    }
+    
+    func resetToZero() {
+        displayableCalculText = "0"
+    }
+    
     func addCalculatingSymbol(_ calculatingSymbol: String) {
         /// If a previous calcul and its result are displayed before typing this new symbol, we'll clear text.
         if expressionHaveResult {
-            clearText()
+//            clearText()
+            displayableCalculText = calculationResult
         }
         /// Checking the last element typed isn't already an operator.
         guard canAddOperator else { return displayableCalculText = "= extra operand" }

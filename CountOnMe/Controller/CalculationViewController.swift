@@ -17,13 +17,14 @@ final class CalculationViewController: UIViewController {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(calculationUpdated), name: Notification.Name("update"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showDivisionAlert), name: Notification.Name("alert"), object: nil)
-        calculation.clearText()
+        calculation.resetToZero()
     }
 }
 
 private extension CalculationViewController {
     /// View actions
     @IBAction func didTapNumberButton(_ sender: UIButton) {
+        calculation.reset()
         guard let numberText = sender.title(for: .normal) else {
             return
         }
@@ -31,7 +32,8 @@ private extension CalculationViewController {
     }
     
     @IBAction func didTapACButton(_ sender: UIButton) {
-        calculation.clearText()
+        // creer methode reset
+        calculation.resetToZero()
     }
     
     @IBAction func didTapEqualButton(_ sender: UIButton) {
@@ -39,6 +41,8 @@ private extension CalculationViewController {
     }
     
     @IBAction func didTapOperatorButton(_ sender: UIButton) {
+        // creer methode reset
+        calculation.reset()
         guard let operatorSymbol = sender.title(for: .normal) else {
             return
         }

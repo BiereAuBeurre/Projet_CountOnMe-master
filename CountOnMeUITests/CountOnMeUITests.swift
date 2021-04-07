@@ -38,7 +38,7 @@ class CountOnMeUITests: XCTestCase {
         app.buttons["0"].tap()
         app.buttons["AC"].tap()
         let textView = app.textViews.firstMatch
-        XCTAssertEqual(textView.value as? String, "") /// Value is "any" type, that's why we specify it's a string.
+        XCTAssertEqual(textView.value as? String, "0") /// Value is "any" type, that's why we specify it's a string.
     }
     
     func testAllSymbolsButtons() throws {
